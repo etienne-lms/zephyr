@@ -7,6 +7,18 @@
 #include <st/u0/stm32u0.dtsi>
 
 / {
+	sram0: memory@20000000 {
+		compatible = "zephyr,memory-region", "mmio-sram";
+		reg = <0x20000000 DT_SIZE_K(8)>;
+		zephyr,memory-region = "SRAM1";
+	};
+
+	sram2: memory@20002000 {
+		compatible = "zephyr,memory-region", "mmio-sram";
+		reg = <0x20002000 DT_SIZE_K(4)>;
+		zephyr,memory-region = "SRAM2";
+	};
+
 	soc {
 		compatible = "st,stm32u031", "st,stm32u0", "simple-bus";
 	};

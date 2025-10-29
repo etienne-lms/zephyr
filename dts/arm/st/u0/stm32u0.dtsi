@@ -59,11 +59,6 @@
 		};
 	};
 
-	sram0: memory@20000000 {
-		compatible = "zephyr,memory-region", "mmio-sram";
-		zephyr,memory-region = "SRAM0";
-	};
-
 	clocks {
 		clk_hse: clk-hse {
 			#clock-cells = <0>;
