@@ -140,7 +140,7 @@ static void generate_mac(uint8_t *mac_addr)
 #endif
 }
 
-#if DT_HAS_COMPAT_STATUS_OKAY(st_stm32n6_ethernet)
+#if DT_HAS_COMPAT_STATUS_OKAY(st_stm32n6_ethernet) && defined(CONFIG_TRUSTED_EXECUTION_SECURE)
 /**
  * Configures the RISAF (RIF Security Attribute Framework) for Ethernet on STM32N6.
  * This function sets up the master and slave security attributes for the Ethernet peripheral.
@@ -178,7 +178,7 @@ static int eth_initialize(const struct device *dev)
 		return -ENODEV;
 	}
 
-#if DT_HAS_COMPAT_STATUS_OKAY(st_stm32n6_ethernet)
+#if DT_HAS_COMPAT_STATUS_OKAY(st_stm32n6_ethernet) && defined(CONFIG_TRUSTED_EXECUTION_SECURE)
 	/* RISAF Configuration */
 	RISAF_Config();
 #endif

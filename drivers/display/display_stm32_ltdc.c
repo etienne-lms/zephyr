@@ -345,9 +345,6 @@ static int stm32_ltdc_init(const struct device *dev)
 	int err;
 	const struct display_stm32_ltdc_config *config = dev->config;
 	struct display_stm32_ltdc_data *data = dev->data;
-#if defined(CONFIG_SOC_SERIES_STM32N6X)
-	RIMC_MasterConfig_t rimc = {0};
-#endif
 
 	/* Configure and set display on/off GPIO */
 	if (config->disp_on_gpio.port) {
@@ -447,10 +444,13 @@ static int stm32_ltdc_init(const struct device *dev)
 		return err;
 	}
 
-#if defined(CONFIG_SOC_SERIES_STM32N6X)
+#if defined(CONFIG_SOC_SERIES_STM32N6X) && defined(CONFIG_TRUSTED_EXECUTION_SECURE)
 	/* Configure RIF for LTDC layer 1 */
-	rimc.MasterCID = RIF_CID_1;
-	rimc.SecPriv = RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_PRIV;
+	RIMC_MasterConfig_t rimc = {
+		.MasterCID = RIF_CID_1,
+		.SecPriv = RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_PRIV,
+	};
+
 	HAL_RIF_RIMC_ConfigMasterAttributes(RIF_MASTER_INDEX_LTDC1, &rimc);
 	HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_LTDCL1,
 					      RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_PRIV);

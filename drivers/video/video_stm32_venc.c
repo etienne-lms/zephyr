@@ -843,7 +843,8 @@ static const struct stm32_venc_config stm32_venc_config_0 = {
 
 static void risaf_config(void)
 {
-	/* Define and initialize the master configuration structure */
+#if defined(CONFIG_TRUSTED_EXECUTION_SECURE)
+	 /* Define and initialize the master configuration structure */
 	RIMC_MasterConfig_t rimc_master = {0};
 
 	/* Enable the clock for the RIFSC (RIF Security Controller) */
@@ -858,6 +859,7 @@ static void risaf_config(void)
 	/* Set the secure and privileged attributes for the VENC as a slave */
 	HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_VENC,
 					      RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_PRIV);
+#endif
 }
 
 static int stm32_venc_init(const struct device *dev)

@@ -521,7 +521,7 @@ static int stm32_jpeg_init(const struct device *dev)
 	/* Run IRQ init */
 	cfg->irq_config(dev);
 
-#if defined(CONFIG_SOC_SERIES_STM32N6X)
+#if defined(CONFIG_SOC_SERIES_STM32N6X) && defined(CONFIG_TRUSTED_EXECUTION_SECURE)
 	HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_JPEG,
 					      RIF_ATTRIBUTE_PRIV | RIF_ATTRIBUTE_SEC);
 #endif
