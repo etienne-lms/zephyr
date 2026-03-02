@@ -27,6 +27,7 @@ struct npu_stm32_cfg {
 
 static void npu_risaf_config(void)
 {
+#if defined(CONFIG_TRUSTED_EXECUTION_SECURE)
 	RIMC_MasterConfig_t RIMC_master = {0};
 
 	RIMC_master.MasterCID = RIF_CID_1;
@@ -34,6 +35,7 @@ static void npu_risaf_config(void)
 	HAL_RIF_RIMC_ConfigMasterAttributes(RIF_MASTER_INDEX_NPU, &RIMC_master);
 	HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_NPU,
 					      RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_PRIV);
+#endif
 }
 
 static int npu_stm32_init(const struct device *dev)
