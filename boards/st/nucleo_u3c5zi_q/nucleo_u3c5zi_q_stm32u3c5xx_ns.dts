@@ -1,0 +1,75 @@
+/*
+ * Copyright (c) 2026 Filip Stojanovic <filipembedded@gmail.com>
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+#include "nucleo_u3c5zi_q.dts"
+
+/ {
+	chosen {
+                zephyr,sram = &sram34;
+		zephyr,code-partition = &slot0_ns_partition;
+	};
+
+	sram34: memory@20040000 {
+		compatible = "zephyr,memory-region", "mmio-sram";
+		reg = <0x20040000 DT_SIZE_K(320 + 64)>;
+		zephyr,memory-region = "SRAM34";
+	};
+};
+
+/* Node label sram0 initialy cover SRAM1 (192kB), SRAM2 (64kB),
+ * SRAM3 (320kB) and SRAM4 (64kB). SRAM2 is owned by secure world
+ * (TF-M). Therefore use constiguous SRAM3 and SRAM4 for Zephyr
+ * and reduce the declared size in sram0 label node to SRAM1 only.
+ */
+&sram0 {
+	reg = <0x20000000 DT_SIZE_K(192)>;
+};
+
+&flash0 {
+	/delete-node/ partitions;
+
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		/*
+		 * Following flash partition is dedicated to the use of nucleo_u3c5zi_q
+		 * with TZEN=1 with TF-M and must be synced on the flash layout idefined
+		 * in TF-M.
+		 */
+		boot_partition: partition@0 {
+			label = "mcuboot";
+			reg = <0x00000000 DT_SIZE_K(24)>;
+		};
+
+		slot0_partition: partition@6000 {
+			label = "image-0";
+			reg = <0x00006000 DT_SIZE_K(256)>;
+		};
+
+		slot0_ns_partition: partition@46000 {
+			label = "image-0-nonsecure";
+			reg = <0x00046000 DT_SIZE_K(512)>;
+		};
+
+		slot1_partition: partition@c6000 {
+			label = "image-1";
+			reg = <0x000c6000 DT_SIZE_K(256)>;
+		};
+
+		slot1_ns_partition: partition@106000 {
+			label = "image-1-nonsecure";
+			reg = <0x00106000 DT_SIZE_K(512)>;
+		};
+
+		storage_partition: partition@186000 {
+			label = "storage";
+			reg = <0x00186000 DT_SIZE_K(448)>;
+		};
+	};
+};
