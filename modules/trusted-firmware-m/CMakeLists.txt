@@ -567,6 +567,15 @@ if(CONFIG_BUILD_WITH_TFM)
       set(SIG_KEY_ID 2147451244)
     endif()
 
+    # Use MCUBOOT_HW_KEY for RSA keys and MCUBOOT_BUILTIN_KEY for EC ones.
+    if(${CONFIG_TFM_MCUBOOT_SIGNATURE_TYPE} MATCHES "^RSA")
+      set(imgtool_key_arg --public-key-format ${TFM_PUBLIC_KEY_FORMAT})
+    elseif(${CONFIG_TFM_MCUBOOT_SIGNATURE_TYPE} MATCHES "^EC-P")
+      set(imgtool_key_arg --psa-key-ids ${SIG_KEY_ID})
+    else()
+      message(FATAL_ERROR "Can't set imgtool wrapper key argument")
+    endif()
+
     set(${OUT_ARG}
       # Add the MCUBoot script to the path so that if there is a version of imgtool in there then
       # it gets used over the system imgtool. Used so that imgtool from upstream
@@ -575,8 +584,7 @@ if(CONFIG_BUILD_WITH_TFM)
       ${PYTHON_EXECUTABLE} ${TFM_MCUBOOT_DIR}/scripts/wrapper.py
       --layout ${layout_file}
       -k ${CONFIG_TFM_KEY_FILE_${TFM_SIGN_ARG_SUFFIX}}
-      --public-key-format ${TFM_PUBLIC_KEY_FORMAT}
-      --psa-key-ids ${SIG_KEY_ID}
+      ${imgtool_key_arg}
       --align ${image_alignment}
       --max-sectors ${TFM_SIGN_ARG_MAX_SECTORS}
       -v ${CONFIG_TFM_IMAGE_VERSION_${TFM_SIGN_ARG_SUFFIX}}
