@@ -8,4 +8,7 @@ if SOC_SERIES_STM32U3X
 config ROM_START_OFFSET
 	default 0x400 if BOOTLOADER_MCUBOOT
 
+configdefault TFM_BL2_NOT_SUPPORTED
+	default y
+
 endif # SOC_SERIES_STM32U3X
