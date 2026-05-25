@@ -37,9 +37,11 @@ properties:
   fifo-watermark:
     type: int
     description: |
-      Specify the FIFO watermark level in frame count.
-      Valid range: 1 - 96. Default value is the reset value.
+      Specify the FIFO watermark level in frame count. Must be a multiple of 3.
+      Default value is the reset value.
     default: 96
+    min: 3
+    max: 96
 
   range:
     type: int
