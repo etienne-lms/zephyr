@@ -9,8 +9,13 @@ common:
     - nrf9160dk/nrf9160/ns
     - lpcxpresso55s69/lpc55s69/cpu0/ns
     - max32657evkit/max32657/ns
-    - stm32h573i_dk/stm32h573xx/ns
     - frdm_mcxn947/mcxn947/cpu0/ns
+    - b_u585i_iot02a/stm32u585xx/ns
+    - nucleo_l552ze_q/stm32l552xx/ns
+    - nucleo_wba65ri/stm32wba65xx/ns
+    - stm32h573i_dk/stm32h573xx/ns
+    - stm32l562e_dk/stm32l562xx/ns
+    - stm32wba65i_dk1/stm32wba65xx/ns
   integration_platforms:
     - mps2/an521/cpu0/ns
   harness: console
