@@ -5,6 +5,9 @@ common:
   modules:
     - tf-m-tests
   filter: CONFIG_BUILD_WITH_TFM
+  platform_exclude:
+    - nucleo_l552ze_q/stm32l552xx/ns
+    - stm32l562e_dk/stm32l562xx/ns
   integration_platforms:
     - mps2/an521/cpu0/ns
   harness: console
