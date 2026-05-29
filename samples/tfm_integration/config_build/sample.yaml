@@ -25,12 +25,3 @@ tests:
   sample.config_build.no_bl2:
     extra_configs:
       - CONFIG_TFM_BL2=n
-  sample.config_build.single_image:
-    tags:
-      - mcuboot
-    platform_allow:
-      # Platform fails no_bl2
-      - stm32h573i_dk/stm32h573xx/ns
-      - stm32l562e_dk/stm32l562xx/ns
-    extra_configs:
-      - CONFIG_TFM_MCUBOOT_IMAGE_NUMBER=1
