@@ -11,6 +11,10 @@
  */
 
 &i2c1 {
+	dmas = <&dma1 2 (STM32_DMA_PERIPH_TX | STM32_DMA_PRIORITY_HIGH)>,
+	       <&dma1 3 (STM32_DMA_PERIPH_RX | STM32_DMA_PRIORITY_HIGH)>;
+	dma-names = "tx", "rx";
+
 	eeprom0: eeprom@54 {
 		compatible = "zephyr,i2c-target-eeprom";
 		reg = <0x54>;
@@ -19,6 +23,10 @@
 };
 
 &i2c2 {
+	dmas = <&dma1 4 (STM32_DMA_PERIPH_TX | STM32_DMA_PRIORITY_HIGH)>,
+	       <&dma1 5 (STM32_DMA_PERIPH_RX | STM32_DMA_PRIORITY_HIGH)>;
+	dma-names = "tx", "rx";
+
 	/* i2c2 is disabled by default because of pin conflict with can1 */
 	status = "okay";
 
@@ -32,4 +40,8 @@
 &can1 {
 	/* can1 shares the pins with i2c2 and must be disabled */
 	status = "disabled";
+};
+
+&dma1 {
+	status = "okay";
 };

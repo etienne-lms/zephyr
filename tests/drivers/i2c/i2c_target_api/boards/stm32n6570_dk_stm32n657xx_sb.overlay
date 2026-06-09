@@ -14,6 +14,10 @@
  */
 
 &i2c1 {
+	dmas = <&gpdma1 0 96 STM32_DMA_PERIPH_TX>,
+	       <&gpdma1 1 95 STM32_DMA_PERIPH_RX>;
+	dma-names = "tx", "rx";
+
 	eeprom0: eeprom@54 {
 		compatible = "zephyr,i2c-target-eeprom";
 		reg = <0x54>;
@@ -22,9 +26,17 @@
 };
 
 &i2c4 {
+	dmas = <&gpdma1 2 102 STM32_DMA_PERIPH_TX>,
+	       <&gpdma1 3 101 STM32_DMA_PERIPH_RX>;
+	dma-names = "tx", "rx";
+
 	eeprom1: eeprom@56 {
 		compatible = "zephyr,i2c-target-eeprom";
 		reg = <0x56>;
 		size = <256>;
 	};
+};
+
+&gpdma1 {
+	status = "okay";
 };

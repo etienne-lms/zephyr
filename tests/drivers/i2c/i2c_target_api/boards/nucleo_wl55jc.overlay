@@ -11,6 +11,10 @@
  */
 
 &i2c2 {
+	dmas = <&dmamux1 0 14 (STM32_DMA_PERIPH_TX | STM32_DMA_PRIORITY_HIGH)>,
+	       <&dmamux1 1 13 (STM32_DMA_PERIPH_RX | STM32_DMA_PRIORITY_HIGH)>;
+	dma-names = "tx", "rx";
+
 	eeprom1: eeprom@56 {
 		compatible = "zephyr,i2c-target-eeprom";
 		reg = <0x56>;
@@ -23,6 +27,9 @@
 	pinctrl-names = "default";
 	scl-gpios = <&gpiob 13 GPIO_ACTIVE_HIGH>;
 	sda-gpios = <&gpiob 14 GPIO_ACTIVE_HIGH>;
+	dmas = <&dmamux1 2 16 (STM32_DMA_PERIPH_TX | STM32_DMA_PRIORITY_HIGH)>,
+	       <&dmamux1 3 15 (STM32_DMA_PERIPH_RX | STM32_DMA_PRIORITY_HIGH)>;
+	dma-names = "tx", "rx";
 	status = "okay";
 	clock-frequency = <I2C_BITRATE_FAST>;
 
@@ -31,4 +38,16 @@
 		reg = <0x54>;
 		size = <256>;
 	};
+};
+
+&dma1 {
+	status = "okay";
+};
+
+&dma2 {
+	status = "okay";
+};
+
+&dmamux1 {
+	status = "okay";
 };
