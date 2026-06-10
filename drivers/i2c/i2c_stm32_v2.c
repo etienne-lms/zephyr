@@ -237,6 +237,29 @@ static int dma_xfer_start(const struct device *dev, struct i2c_msg *msg)
 	return 0;
 }
 
+static int i2c_stm32_irq_start_dma(const struct device *dev, struct i2c_msg *msg, I2C_TypeDef *regs)
+{
+	struct i2c_stm32_data *data = dev->data;
+
+	if (dma_xfer_start(dev, msg) == 0) {
+		return 0;
+	}
+
+#if defined(CONFIG_I2C_TARGET)
+	data->controller_active = false;
+	if (!data->target_attached && !data->smbalert_active) {
+		LL_I2C_Disable(regs);
+	}
+#else
+	if (!data->smbalert_active) {
+		LL_I2C_Disable(regs);
+	}
+#endif
+	data->current.msg = NULL;
+
+	return -EIO;
+}
+
 static void dma_finish(const struct device *dev, struct i2c_msg *msg)
 {
 	const struct i2c_stm32_config *cfg = dev->config;
@@ -253,6 +276,16 @@ static void dma_finish(const struct device *dev, struct i2c_msg *msg)
 	}
 }
 #else /* CONFIG_I2C_STM32_V2_DMA */
+static int i2c_stm32_irq_start_dma(const struct device *dev __unused, struct i2c_msg *msg __unused,
+				   I2C_TypeDef *regs __unused)
+{
+	return 0;
+}
+
+static void dma_finish(const struct device *dev __unused, struct i2c_msg *msg __unused)
+{
+}
+
 static bool using_dma(const struct device *dev __unused)
 {
 	return false;
@@ -393,12 +426,12 @@ static void i2c_stm32_controller_abort_to_target(const struct device *dev, bool 
 	}
 
 	i2c_stm32_disable_transfer_interrupts(dev);
-#ifdef CONFIG_I2C_STM32_V2_DMA
+
 	if (using_dma(dev)) {
 		LL_I2C_DisableDMAReq_RX(cfg->i2c);
 		LL_I2C_DisableDMAReq_TX(cfg->i2c);
 	}
-#endif
+
 	LL_I2C_ClearFlag_TXE(cfg->i2c);
 	data->controller_active = false;
 	i2c_stm32_signal_xfer_done(dev);
@@ -673,7 +706,7 @@ void i2c_stm32_event(const struct device *dev)
 		 * in same direction (No RESTART or STOP)
 		 */
 		uint32_t cr2 = stm32_reg_read(&regs->CR2);
-#ifdef CONFIG_I2C_STM32_V2_DMA
+
 		if (using_dma(dev)) {
 			/* Get number of bytes bytes transferred by DMA */
 			uint32_t xfer_len = (cr2 & I2C_CR2_NBYTES_Msk) >> I2C_CR2_NBYTES_Pos;
@@ -681,7 +714,6 @@ void i2c_stm32_event(const struct device *dev)
 			data->current.len -= xfer_len;
 			data->current.buf += xfer_len;
 		}
-#endif
 
 		if (data->current.len == 0U) {
 			/* In this state all data from current message is transferred
@@ -828,12 +860,10 @@ static int stm32_i2c_irq_msg_finish(const struct device *dev, struct i2c_msg *ms
 	/* Wait for IRQ to complete or timeout */
 	ret = k_sem_take(&data->device_sync_sem, K_MSEC(CONFIG_I2C_TRANSFER_TIMEOUT_MS));
 
-#ifdef CONFIG_I2C_STM32_V2_DMA
 	if (using_dma(dev)) {
 		/* Stop DMA and invalidate cache if needed */
 		dma_finish(dev, msg);
 	}
-#endif
 
 	/* Check for transfer errors or timeout */
 	if (data->current.is_nack || data->current.is_arlo || (ret != 0)) {
@@ -912,7 +942,7 @@ static int i2c_stm32_irq_prepare_start(const struct device *dev, struct i2c_msg 
 
 	if ((msg->flags & I2C_MSG_RW_MASK) == I2C_MSG_WRITE) {
 		*cr2 &= ~I2C_CR2_RD_WRN;
-#ifndef CONFIG_I2C_STM32_V2_DMA
+
 		/* Prepare first byte in TX buffer before transfer start as a
 		 * workaround for errata: "Transmission stalled after first byte transfer"
 		 */
@@ -921,7 +951,6 @@ static int i2c_stm32_irq_prepare_start(const struct device *dev, struct i2c_msg 
 			data->current.len--;
 			data->current.buf++;
 		}
-#endif
 	} else {
 		*cr2 |= I2C_CR2_RD_WRN;
 	}
@@ -931,31 +960,6 @@ static int i2c_stm32_irq_prepare_start(const struct device *dev, struct i2c_msg 
 
 	return 0;
 }
-
-#ifdef CONFIG_I2C_STM32_V2_DMA
-static int i2c_stm32_irq_start_dma(const struct device *dev, struct i2c_msg *msg, I2C_TypeDef *regs)
-{
-	struct i2c_stm32_data *data = dev->data;
-
-	if (dma_xfer_start(dev, msg) == 0) {
-		return 0;
-	}
-
-#if defined(CONFIG_I2C_TARGET)
-	data->controller_active = false;
-	if (!data->target_attached && !data->smbalert_active) {
-		LL_I2C_Disable(regs);
-	}
-#else
-	if (!data->smbalert_active) {
-		LL_I2C_Disable(regs);
-	}
-#endif
-	data->current.msg = NULL;
-
-	return -EIO;
-}
-#endif
 
 static int stm32_i2c_irq_xfer(const struct device *dev, struct i2c_msg *msg,
 			      uint8_t *next_msg_flags, uint16_t target)
@@ -980,12 +984,10 @@ static int stm32_i2c_irq_xfer(const struct device *dev, struct i2c_msg *msg,
 	data->current.is_err = 0U;
 	data->current.msg = msg;
 
-#if defined(CONFIG_I2C_STM32_V2_DMA)
 	if (using_dma(dev) && !stm32_buf_in_nocache((uintptr_t)msg->buf, msg->len) &&
 	    ((msg->flags & I2C_MSG_RW_MASK) == I2C_MSG_WRITE)) {
 		sys_cache_data_flush_range(msg->buf, msg->len);
 	}
-#endif /* CONFIG_I2C_STM32_V2_DMA */
 
 	/* Flush TX register */
 	LL_I2C_ClearFlag_TXE(regs);
@@ -1043,12 +1045,10 @@ static int stm32_i2c_irq_xfer(const struct device *dev, struct i2c_msg *msg,
 	uint32_t cr1 = I2C_CR1_ERRIE | I2C_CR1_STOPIE | I2C_CR1_TCIE | I2C_CR1_NACKIE;
 
 	if (using_dma(dev)) {
-#ifdef CONFIG_I2C_STM32_V2_DMA
 		ret = i2c_stm32_irq_start_dma(dev, msg, regs);
 		if (ret != 0) {
 			return ret;
 		}
-#endif /* CONFIG_I2C_STM32_V2_DMA */
 	} else {
 		/* If not using DMA, also enable RX and TX empty interrupts */
 		cr1 |= I2C_CR1_TXIE | I2C_CR1_RXIE;
