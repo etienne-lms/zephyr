@@ -215,6 +215,11 @@ static int dma_xfer_start(const struct device *dev, struct i2c_msg *msg)
 			data->dma_blk_cfg.dest_addr_adj = DMA_ADDR_ADJ_NO_CHANGE;
 			data->dma_blk_cfg.block_size = data->current.len;
 
+			if (!stm32_buf_in_nocache((uintptr_t)data->current.buf,
+						  data->current.len)) {
+				sys_cache_data_flush_range(data->current.buf, data->current.len);
+			}
+
 			ret = configure_dma(&cfg->tx_dma, &data->dma_tx_cfg, &data->dma_blk_cfg);
 			if (ret != 0) {
 				return ret;
