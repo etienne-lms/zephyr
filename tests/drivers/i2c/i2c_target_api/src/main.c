@@ -26,9 +26,17 @@
 #define TEST_DATA_SIZE	MIN(CONFIG_I2C_TEST_DATA_MAX_SIZE, \
 			    MIN(DT_PROP(NODE_EP0, size), DT_PROP(NODE_EP1, size)))
 
+#ifdef CONFIG_I2C_TEST_CACHE_ALIGN_WRITE_BUFFER
+#define TEST_DATA_BUFFER_SIZE	ROUND_UP(TEST_DATA_SIZE, CONFIG_DCACHE_LINE_SIZE)
+#define TEST_DATA_BUFFER_ATTRIB __aligned(CONFIG_DCACHE_LINE_SIZE)
+#else
+#define TEST_DATA_BUFFER_SIZE	TEST_DATA_SIZE
+#define TEST_DATA_BUFFER_ATTRIB
+#endif
+
 static uint8_t eeprom_0_data[TEST_DATA_SIZE];
 static uint8_t eeprom_1_data[TEST_DATA_SIZE];
-static uint8_t i2c_buffer[TEST_DATA_SIZE];
+static uint8_t i2c_buffer[TEST_DATA_BUFFER_SIZE] TEST_DATA_BUFFER_ATTRIB;
 
 /*
  * We need 5x(buffer size) + 1 to print a comma-separated list of each
