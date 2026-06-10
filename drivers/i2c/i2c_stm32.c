@@ -539,6 +539,10 @@ void i2c_stm32_dma_rx_cb(const struct device *dma_dev, void *user_data,
 #define I2C_STM32_INIT(index)									\
 	I2C_STM32_IRQ_HANDLER_DECL(index);							\
 												\
+	BUILD_ASSERT(!IS_ENABLED(CONFIG_I2C_STM32_V2_DMA) ||					\
+		     (DT_INST_DMAS_HAS_NAME(index, tx) == DT_INST_DMAS_HAS_NAME(index, rx)),	\
+		     "STM32 I2C requires either none or both of rx and tx DMAs are used");	\
+												\
 	IF_ENABLED(DT_HAS_COMPAT_STATUS_OKAY(st_stm32_i2c_v2),					\
 		(static const uint32_t i2c_timings_##index[] =					\
 			DT_INST_PROP_OR(index, timings, {});))					\
