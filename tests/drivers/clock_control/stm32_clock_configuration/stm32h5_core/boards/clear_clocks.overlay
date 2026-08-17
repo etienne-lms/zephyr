@@ -16,7 +16,7 @@
 };
 
 &usart1 {
-	clocks = <&rcc STM32_CLOCK_BUS_APB2 0x00004000>,
+	clocks = <&rcc STM32_CLOCK(APB2, 14)>,
 		 <&rcc STM32_SRC_CSI USART1_SEL(4)>;
 };
 

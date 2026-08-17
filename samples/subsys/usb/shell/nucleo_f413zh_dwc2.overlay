@@ -13,7 +13,7 @@
 			reg = <0x50000000 0x40000>;
 			interrupts = <67 0>;
 			interrupt-names = "fsotg";
-			clocks = <&rcc STM32_CLOCK_BUS_AHB2 0x00000080>,
+			clocks = <&rcc STM32_CLOCK(AHB2, 7)>,
 				 <&rcc STM32_SRC_PLL_Q NO_SEL>;
 			num-out-eps = <6>;
 			num-in-eps = <6>;

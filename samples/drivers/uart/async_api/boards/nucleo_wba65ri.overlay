@@ -18,7 +18,7 @@
 };
 
 dut: &usart1 {
-	clocks = <&rcc STM32_CLOCK_BUS_APB2 0x00004000>,
+	clocks = <&rcc STM32_CLOCK(APB2, 14)>,
 		 <&rcc STM32_SRC_HSI16 USART1_SEL(2)>;
 
 	dmas = <&gpdma1 4 12 STM32_DMA_PERIPH_TX>,

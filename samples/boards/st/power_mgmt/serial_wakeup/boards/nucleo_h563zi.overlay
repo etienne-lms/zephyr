@@ -6,7 +6,7 @@
 
 &usart3 {
 	/* Set domain clock to HSI to allow wakeup from Stop mode */
-	clocks = <&rcc STM32_CLOCK_BUS_APB1 0x00040000>,
+	clocks = <&rcc STM32_CLOCK(APB1L, 18)>,
 		 <&rcc STM32_SRC_HSI USART3_SEL(3)>;
 
 	/* Configure device as wakeup source */

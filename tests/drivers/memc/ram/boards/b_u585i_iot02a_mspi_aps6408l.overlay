@@ -19,7 +19,7 @@
 			clock-names = "ospix", "ospi-ker", "ospi-mgr";
 			clocks = <&rcc STM32_CLOCK(AHB2_2, 4)>,
 				 <&rcc STM32_SRC_SYSCLK OCTOSPI_SEL(0)>,
-				 <&rcc STM32_CLOCK(AHB2, 21)>;
+				 <&rcc STM32_CLOCK(AHB2_1, 21)>;
 			clock-frequency = <DT_FREQ_M(133)>;
 			#address-cells = <1>;
 			#size-cells = <0>;

@@ -117,12 +117,12 @@
 };
 
 &i2c1 {
-	clocks = <&rcc STM32_CLOCK(APB1, 21)>, <&rcc STM32_SRC_IC10 I2C1_SEL(2)>;
+	clocks = <&rcc STM32_CLOCK(APB1_1, 21)>, <&rcc STM32_SRC_IC10 I2C1_SEL(2)>;
 	status = "okay";
 };
 
 &adc1 {
-	clocks = <&rcc STM32_CLOCK(AHB1, 5)>, <&rcc STM32_SRC_IC8 ADC12_SEL(3)>;
+	clocks = <&rcc STM32_CLOCK(AHB1_1, 5)>, <&rcc STM32_SRC_IC8 ADC12_SEL(3)>;
 	status = "okay";
 };
 

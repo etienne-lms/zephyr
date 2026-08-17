@@ -21,7 +21,7 @@
 };
 
 &adc1 {
-	clocks = <&rcc STM32_CLOCK(AHB1, 5)>,
+	clocks = <&rcc STM32_CLOCK(AHB1L, 5)>,
 		 <&rcc STM32_SRC_CKPER ADC_SEL(2)>;
 	clock-names = "adcx", "adc_ker";
 	st,adc-clock-source = "ASYNC";

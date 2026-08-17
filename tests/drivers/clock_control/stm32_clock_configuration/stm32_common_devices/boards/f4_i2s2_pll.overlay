@@ -80,7 +80,7 @@
 };
 
 &i2s2 {
-	clocks = <&rcc STM32_CLOCK_BUS_APB1 0x00004000>,
+	clocks = <&rcc STM32_CLOCK(APB1, 14)>,
 		 <&rcc STM32_SRC_PLLI2S_R I2S_SEL(0)>;
 	pinctrl-0 = <&i2s2_ck_pb10 &i2s2_sd_pb15>;
 	pinctrl-names = "default";

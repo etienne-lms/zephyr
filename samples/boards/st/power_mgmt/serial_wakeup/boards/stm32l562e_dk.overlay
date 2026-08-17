@@ -25,7 +25,7 @@
 	pinctrl-1 = <&analog_pb10 &analog_pb11>;
 	pinctrl-names = "default", "sleep";
 
-	clocks = <&rcc STM32_CLOCK_BUS_APB1_2 0x00000001>,
+	clocks = <&rcc STM32_CLOCK(APB1_2, 0)>,
 		 <&rcc STM32_SRC_LSE LPUART1_SEL(3)>;
 
 	current-speed = <9600>;
@@ -45,7 +45,7 @@
 	/* Uncomment out this line to use usart1 as wakeup source */
 	/* wakeup-source; */
 
-	clocks = <&rcc STM32_CLOCK_BUS_APB2 0x00004000>,
+	clocks = <&rcc STM32_CLOCK(APB2, 14)>,
 		 <&rcc STM32_SRC_HSI USART1_SEL(2)>;
 
 	status = "okay";

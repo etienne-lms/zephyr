@@ -73,7 +73,7 @@
 };
 
 &i2c1 {
-	clocks = <&rcc STM32_CLOCK(APB1, 21)>, <&rcc STM32_SRC_CKPER I2C1_SEL(1)>;
+	clocks = <&rcc STM32_CLOCK(APB1_1, 21)>, <&rcc STM32_SRC_CKPER I2C1_SEL(1)>;
 	status = "okay";
 };
 

@@ -72,7 +72,7 @@
 };
 
 &i2c1 {
-	clocks = <&rcc STM32_CLOCK(APB1, 21)>, <&rcc STM32_SRC_HSI_DIV I2C1_SEL(5)>;
+	clocks = <&rcc STM32_CLOCK(APB1_1, 21)>, <&rcc STM32_SRC_HSI_DIV I2C1_SEL(5)>;
 	status = "disabled";
 };
 
