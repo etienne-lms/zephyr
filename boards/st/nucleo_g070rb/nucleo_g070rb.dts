@@ -89,7 +89,7 @@
 };
 
 &rtc {
-	clocks = <&rcc STM32_CLOCK(APB1, 10)>,
+	clocks = <&rcc STM32_CLOCK(APB_1, 10)>,
 		 <&rcc STM32_SRC_LSI RTC_SEL(2)>;
 
 	status = "okay";

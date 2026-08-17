@@ -185,7 +185,7 @@
 };
 
 &rng {
-	clocks = <&rcc STM32_CLOCK(AHB1, 20)>,
+	clocks = <&rcc STM32_CLOCK(AHB, 20)>,
 		 <&rcc STM32_SRC_HSI48 HSI48_SEL(1)>;
 	status = "okay";
 };

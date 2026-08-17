@@ -159,7 +159,7 @@
 };
 
 &usart2 {
-	clocks = <&rcc STM32_CLOCK(APB1, 17)>,
+	clocks = <&rcc STM32_CLOCK(APB1_1, 17)>,
 		 <&rcc STM32_SRC_HSI16 USART2_SEL(2)>;
 	pinctrl-0 = <&usart2_tx_pa12 &usart2_rx_pb8>;
 	pinctrl-1 = <&analog_pa12 &analog_pb8>;

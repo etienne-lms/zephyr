@@ -104,7 +104,7 @@
 
 &i2c2 {
 	status = "okay";
-	clocks = <&rcc STM32_CLOCK(APB1, 22)>,
+	clocks = <&rcc STM32_CLOCK(APB1L, 22)>,
 		 <&rcc STM32_SRC_CKPER I2C2_SEL(1)>;
 	pinctrl-0 = <&i2c2_scl_pd14 &i2c2_sda_pd4>;
 	pinctrl-names = "default";
@@ -269,7 +269,7 @@
 };
 
 &fdcan1 {
-	clocks = <&rcc STM32_CLOCK(APB1_2, 8)>,
+	clocks = <&rcc STM32_CLOCK(APB1H, 8)>,
 		 <&rcc STM32_SRC_CKPER FDCAN_SEL(1)>;
 	pinctrl-0 = <&fdcan1_rx_pd0 &fdcan1_tx_ph2>;
 	pinctrl-names = "default";
@@ -277,7 +277,7 @@
 };
 
 csi_i2c: &i2c1 {
-	clocks = <&rcc STM32_CLOCK(APB1, 21)>,
+	clocks = <&rcc STM32_CLOCK(APB1L, 21)>,
 		 <&rcc STM32_SRC_CKPER I2C1_SEL(1)>;
 	pinctrl-0 = <&i2c1_scl_ph9 &i2c1_sda_pc1>;
 	pinctrl-names = "default";
@@ -288,7 +288,7 @@ csi_i2c: &i2c1 {
 };
 
 &i2c4 {
-	clocks = <&rcc STM32_CLOCK(APB4, 7)>,
+	clocks = <&rcc STM32_CLOCK(APB4L, 7)>,
 		 <&rcc STM32_SRC_CKPER I2C4_SEL(1)>;
 	pinctrl-0 = <&i2c4_scl_pe13 &i2c4_sda_pe14>;
 	pinctrl-names = "default";
@@ -330,7 +330,7 @@ csi_i2c: &i2c1 {
 };
 
 &usart2 {
-	clocks = <&rcc STM32_CLOCK(APB1, 17)>,
+	clocks = <&rcc STM32_CLOCK(APB1L, 17)>,
 		 <&rcc STM32_SRC_CKPER USART2_SEL(1)>;
 	pinctrl-0 = <&usart2_tx_pd5 &usart2_rx_pf6
 		     &usart2_cts_pg5 &usart2_rts_pg14>;
@@ -365,7 +365,7 @@ csi_i2c: &i2c1 {
 	pinctrl-0 = <&i3c1_scl_ph9 &i3c1_sda_pc1>;
 	pinctrl-names = "default";
 
-	clocks = <&rcc STM32_CLOCK(APB1, 24)>,
+	clocks = <&rcc STM32_CLOCK(APB1L, 24)>,
 		 <&rcc STM32_SRC_IC10 I3C1_SEL(2)>;
 
 	i2c-scl-hz = <400000>;
@@ -612,7 +612,7 @@ zephyr_jpegenc: &jpeg {
 };
 
 &rtc {
-	clocks = <&rcc STM32_CLOCK(APB4, 16)>,
+	clocks = <&rcc STM32_CLOCK(APB4L, 16)>,
 		 <&rcc STM32_SRC_LSE RTC_SEL(1)>;
 	status = "okay";
 };

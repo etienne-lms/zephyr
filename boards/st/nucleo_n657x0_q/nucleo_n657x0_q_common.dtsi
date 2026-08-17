@@ -186,7 +186,7 @@
 };
 
 &fdcan1 {
-	clocks = <&rcc STM32_CLOCK(APB1_2, 8)>,
+	clocks = <&rcc STM32_CLOCK(APB1L, 8)>,
 		 <&rcc STM32_SRC_CKPER FDCAN_SEL(1)>;
 	pinctrl-0 = <&fdcan1_rx_pd0 &fdcan1_tx_ph2>;
 	pinctrl-names = "default";
@@ -194,7 +194,7 @@
 };
 
 &i2c1 {
-	clocks = <&rcc STM32_CLOCK(APB1, 21)>,
+	clocks = <&rcc STM32_CLOCK(APB1L, 21)>,
 		 <&rcc STM32_SRC_CKPER I2C1_SEL(1)>;
 	pinctrl-0 = <&i2c1_scl_ph9 &i2c1_sda_pc1>;
 	pinctrl-names = "default";
@@ -205,7 +205,7 @@
 };
 
 csi_i2c: &i2c2 {
-	clocks = <&rcc STM32_CLOCK(APB1, 22)>,
+	clocks = <&rcc STM32_CLOCK(APB1L, 22)>,
 		 <&rcc STM32_SRC_CKPER I2C2_SEL(1)>;
 	pinctrl-0 = <&i2c2_scl_pb10 &i2c2_sda_pb11>;
 	pinctrl-names = "default";
@@ -216,7 +216,7 @@ csi_i2c: &i2c2 {
 };
 
 &i2c4 {
-	clocks = <&rcc STM32_CLOCK(APB4, 7)>,
+	clocks = <&rcc STM32_CLOCK(APB4L, 7)>,
 		 <&rcc STM32_SRC_CKPER I2C4_SEL(1)>;
 	pinctrl-0 = <&i2c4_scl_pe13 &i2c4_sda_pe14>;
 	pinctrl-names = "default";
@@ -244,7 +244,7 @@ csi_i2c: &i2c2 {
 };
 
 &usart3 {
-	clocks = <&rcc STM32_CLOCK(APB1, 18)>,
+	clocks = <&rcc STM32_CLOCK(APB1L, 18)>,
 		 <&rcc STM32_SRC_CKPER USART3_SEL(1)>;
 	pinctrl-0 = <&usart3_tx_pd8 &usart3_rx_pd9>;
 	pinctrl-names = "default";
@@ -367,7 +367,7 @@ csi_capture_port: &pipe_main {};
 };
 
 &rtc {
-	clocks = <&rcc STM32_CLOCK(APB4, 16)>,
+	clocks = <&rcc STM32_CLOCK(APB4L, 16)>,
 		 <&rcc STM32_SRC_LSE RTC_SEL(1)>;
 	status = "okay";
 };

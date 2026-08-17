@@ -126,7 +126,7 @@
 };
 
 &rtc {
-	clocks = <&rcc STM32_CLOCK(APB1, 10)>,
+	clocks = <&rcc STM32_CLOCK(APB_1, 10)>,
 		 <&rcc STM32_SRC_LSE RTC_SEL(1)>;
 	status = "okay";
 };
@@ -167,7 +167,7 @@
 	pinctrl-0 = <&adc1_in0_pa0 &adc1_in1_pa1 &adc1_in4_pa4>;
 	pinctrl-names = "default";
 	st,adc-clock-source = "ASYNC";
-	clocks = <&rcc STM32_CLOCK(APB1_2, 20)>,
+	clocks = <&rcc STM32_CLOCK(APB_2, 20)>,
 		 <&rcc STM32_SRC_HSI ADC_SEL(2)>;
 	clock-names = "adcx", "adc_ker";
 	st,adc-prescaler = <4>;
@@ -195,7 +195,7 @@
  * Close JP9 to enable 120 Ohm termination on the board.
  */
 &fdcan1 {
-	clocks = <&rcc STM32_CLOCK(APB1, 12)>,
+	clocks = <&rcc STM32_CLOCK(APB_1, 12)>,
 		 <&rcc STM32_SRC_HSE FDCAN_SEL(2)>;
 	pinctrl-0 = <&fdcan1_rx_pd0 &fdcan1_tx_pd1>;
 	pinctrl-names = "default";

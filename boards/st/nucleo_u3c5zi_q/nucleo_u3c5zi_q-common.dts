@@ -200,7 +200,7 @@ zephyr_udc0: &usb {
 };
 
 &rtc {
-	clocks = <&rcc STM32_CLOCK(APB1, 30)>,
+	clocks = <&rcc STM32_CLOCK(APB1_1, 30)>,
 		 <&rcc STM32_SRC_LSE RTC_SEL(1)>;
 	status = "okay";
 };

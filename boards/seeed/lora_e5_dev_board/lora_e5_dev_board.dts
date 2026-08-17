@@ -84,7 +84,7 @@
 
 &lptim1 {
 	status = "okay";
-	clocks = <&rcc STM32_CLOCK(APB1, 31)>,
+	clocks = <&rcc STM32_CLOCK(APB1_1, 31)>,
 		 <&rcc STM32_SRC_LSI LPTIM1_SEL(1)>;
 };
 
@@ -150,7 +150,7 @@
 };
 
 &rtc {
-	clocks = <&rcc STM32_CLOCK(APB1, 10)>,
+	clocks = <&rcc STM32_CLOCK(APB1_1, 10)>,
 		 <&rcc STM32_SRC_LSI RTC_SEL(2)>;
 	status = "okay";
 };

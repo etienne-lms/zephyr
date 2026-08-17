@@ -118,7 +118,7 @@
 	pinctrl-0 = <&adc1_in0_pc0 &adc1_in1_pc1>;
 	pinctrl-names = "default";
 	st,adc-clock-source = "ASYNC";
-	clocks = <&rcc STM32_CLOCK(APB1_2, 20)>,
+	clocks = <&rcc STM32_CLOCK(APB_2, 20)>,
 		 <&rcc STM32_SRC_HSI ADC_SEL(2)>;
 	clock-names = "adcx", "adc_ker";
 	st,adc-prescaler = <4>;
@@ -149,7 +149,7 @@
 };
 
 &lptim1 {
-	clocks = <&rcc STM32_CLOCK(APB1, 31)>,
+	clocks = <&rcc STM32_CLOCK(APB_1, 31)>,
 		 <&rcc STM32_SRC_LSI LPTIM1_SEL(1)>;
 	status = "okay";
 };
@@ -170,7 +170,7 @@
 };
 
 &rng {
-	clocks = <&rcc STM32_CLOCK(AHB1, 18)>,
+	clocks = <&rcc STM32_CLOCK(AHB, 18)>,
 		 <&rcc STM32_SRC_HSI48 CLK48_SEL(1)>;
 	status = "okay";
 };
@@ -180,7 +180,7 @@
 };
 
 zephyr_udc0: &usb {
-	clocks = <&rcc STM32_CLOCK(APB1, 13)>,
+	clocks = <&rcc STM32_CLOCK(APB_1, 13)>,
 		 <&rcc STM32_SRC_HSI48 CLK48_SEL(1)>;
 	pinctrl-0 = <&usb_dm_pa11 &usb_dp_pa12>;
 	pinctrl-names = "default";
@@ -188,7 +188,7 @@ zephyr_udc0: &usb {
 };
 
 &rtc {
-	clocks = <&rcc STM32_CLOCK(APB1, 10)>,
+	clocks = <&rcc STM32_CLOCK(APB_1, 10)>,
 		 <&rcc STM32_SRC_LSE RTC_SEL(1)>;
 	status = "okay";
 };

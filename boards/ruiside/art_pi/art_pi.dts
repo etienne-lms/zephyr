@@ -361,7 +361,7 @@
 zephyr_udc0: &usbotg_fs {
 	pinctrl-0 = <&usb_otg_fs_dm_pa11 &usb_otg_fs_dp_pa12>;
 	pinctrl-names = "default";
-	clocks = <&rcc STM32_CLOCK(AHB1, 27)>,
+	clocks = <&rcc STM32_CLOCK(AHB1L, 27)>,
 		 <&rcc STM32_SRC_HSI48 USB_SEL(3)>;
 	maximum-speed = "full-speed";
 	ram-size = <1280>;
