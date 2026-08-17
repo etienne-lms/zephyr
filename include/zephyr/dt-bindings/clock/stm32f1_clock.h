@@ -8,6 +8,8 @@
 
 #include "stm32_common_clocks.h"
 
+/** @cond INTERNAL_HIDDEN */
+
 /** Domain clocks */
 
 /** Bus clocks */
@@ -55,5 +57,7 @@
 #define ADC_PRE_DIV_4		1
 #define ADC_PRE_DIV_6		2
 #define ADC_PRE_DIV_8		3
+
+/** @endcond */
 
 #endif /* ZEPHYR_INCLUDE_DT_BINDINGS_CLOCK_STM32F1_CLOCK_H_ */

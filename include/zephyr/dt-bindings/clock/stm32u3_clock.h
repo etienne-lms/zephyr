@@ -8,6 +8,8 @@
 
 #include "stm32_common_clocks.h"
 
+/** @cond INTERNAL_HIDDEN */
+
 /** Domain clocks */
 
 /* RM0487, Figure 36 Clock tree for STM32U3 Series */
@@ -31,17 +33,24 @@
 /* #define STM32_SRC_ICLK	TBD */
 
 /** Bus clocks */
-#define STM32_CLOCK_BUS_AHB1    0x088
+#define STM32_CLOCK_BUS_AHB1_1  0x088
 #define STM32_CLOCK_BUS_AHB1_2  0x094
-#define STM32_CLOCK_BUS_AHB2    0x08C
+#define STM32_CLOCK_BUS_AHB2_1  0x08C
 #define STM32_CLOCK_BUS_AHB2_2  0x090
-#define STM32_CLOCK_BUS_APB1    0x09C
+#define STM32_CLOCK_BUS_APB1_1  0x09C
 #define STM32_CLOCK_BUS_APB1_2  0x0A0
 #define STM32_CLOCK_BUS_APB2    0x0A4
 #define STM32_CLOCK_BUS_APB3    0x0A8
 
-#define STM32_PERIPH_BUS_MIN	STM32_CLOCK_BUS_AHB1
+#define STM32_PERIPH_BUS_MIN	STM32_CLOCK_BUS_AHB1_1
 #define STM32_PERIPH_BUS_MAX	STM32_CLOCK_BUS_APB3
+
+/** @deprecated Please use STM32_CLOCK_BUS_AHB1_1 */
+#define STM32_CLOCK_BUS_AHB1	STM32_CLOCK_BUS_AHB1_1
+/** @deprecated Please use STM32_CLOCK_BUS_AHB2_1 */
+#define STM32_CLOCK_BUS_AHB2	STM32_CLOCK_BUS_AHB2_1
+/** @deprecated Please use STM32_CLOCK_BUS_APB1_1 */
+#define STM32_CLOCK_BUS_APB1	STM32_CLOCK_BUS_APB1_1
 
 /** @brief RCC_CCIPRx register offset (RM0487.pdf) */
 #define CCIPR1_REG		0x100
@@ -114,5 +123,7 @@
 #define ADCDAC_PRE_DIV_128	0xD
 #define ADCDAC_PRE_DIV_256	0xE
 #define ADCDAC_PRE_DIV_512	0xF
+
+/** @endcond INTERNAL_HIDDEN */
 
 #endif /* ZEPHYR_INCLUDE_DT_BINDINGS_CLOCK_STM32U3_CLOCK_H_ */

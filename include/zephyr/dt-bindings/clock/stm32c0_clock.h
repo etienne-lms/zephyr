@@ -8,14 +8,23 @@
 
 #include "stm32_common_clocks.h"
 
+/** @cond INTERNAL_HIDDEN */
+
 /** Bus clocks */
 #define STM32_CLOCK_BUS_IOP     0x034
-#define STM32_CLOCK_BUS_AHB1    0x038
-#define STM32_CLOCK_BUS_APB1    0x03c
-#define STM32_CLOCK_BUS_APB1_2  0x040
+#define STM32_CLOCK_BUS_AHB     0x038
+#define STM32_CLOCK_BUS_APB_1   0x03c
+#define STM32_CLOCK_BUS_APB_2   0x040
 
 #define STM32_PERIPH_BUS_MIN	STM32_CLOCK_BUS_IOP
-#define STM32_PERIPH_BUS_MAX	STM32_CLOCK_BUS_APB1_2
+#define STM32_PERIPH_BUS_MAX	STM32_CLOCK_BUS_APB_2
+
+/** @deprecated Please use STM32_CLOCK_BUS_AHB */
+#define STM32_CLOCK_BUS_AHB1	STM32_CLOCK_BUS_AHB
+/** @deprecated Please use STM32_CLOCK_BUS_APB_1 */
+#define STM32_CLOCK_BUS_APB1	STM32_CLOCK_BUS_APB_1
+/** @deprecated Please use STM32_CLOCK_BUS_APB_2 */
+#define STM32_CLOCK_BUS_APB1_2	STM32_CLOCK_BUS_APB_2
 
 /** Domain clocks */
 /* RM0490, §5.4.21/22 Clock configuration register (RCC_CCIPRx) */
@@ -71,5 +80,7 @@
 #define MCO_PRE_DIV_32  5
 #define MCO_PRE_DIV_64  6
 #define MCO_PRE_DIV_128 7
+
+/** @endcond */
 
 #endif /* ZEPHYR_INCLUDE_DT_BINDINGS_CLOCK_STM32C0_CLOCK_H_ */

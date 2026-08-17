@@ -49,8 +49,8 @@
 #define STM32_CLOCK_BUS_AHB2    0x0DC
 #define STM32_CLOCK_BUS_AHB4    0x0E0
 #define STM32_CLOCK_BUS_APB3    0x0E4
-#define STM32_CLOCK_BUS_APB1    0x0E8
-#define STM32_CLOCK_BUS_APB1_2  0x0EC
+#define STM32_CLOCK_BUS_APB1L   0x0E8
+#define STM32_CLOCK_BUS_APB1H   0x0EC
 #define STM32_CLOCK_BUS_APB2    0x0F0
 #define STM32_CLOCK_BUS_APB4    0x0F4
 /** Alias D1/2/3 domains clocks */ /* TBD: To remove ? */
@@ -62,6 +62,11 @@
 
 #define STM32_PERIPH_BUS_MIN	STM32_CLOCK_BUS_AHB3
 #define STM32_PERIPH_BUS_MAX	STM32_CLOCK_BUS_APB4
+
+/** @deprecated Please use STM32_CLOCK_BUS_APB1L */
+#define STM32_CLOCK_BUS_APB1	STM32_CLOCK_BUS_APB1L
+/** @deprecated Please use STM32_CLOCK_BUS_APB1H */
+#define STM32_CLOCK_BUS_APB1_2	STM32_CLOCK_BUS_APB1H
 
 /** @brief RCC_DxCCIP register offset (RM0399.pdf) */
 #define D1CCIPR_REG		0x4C

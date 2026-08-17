@@ -8,13 +8,18 @@
 
 #include "stm32_common_clocks.h"
 
+/** @cond INTERNAL_HIDDEN */
+
 /** Bus gatting clocks */
-#define STM32_CLOCK_BUS_AHB1    0x01c
+#define STM32_CLOCK_BUS_AHB     0x01c
 #define STM32_CLOCK_BUS_APB2    0x020
 #define STM32_CLOCK_BUS_APB1    0x024
 
-#define STM32_PERIPH_BUS_MIN	STM32_CLOCK_BUS_AHB1
+#define STM32_PERIPH_BUS_MIN	STM32_CLOCK_BUS_AHB
 #define STM32_PERIPH_BUS_MAX	STM32_CLOCK_BUS_APB1
+
+/** @deprecated Please use STM32_CLOCK_BUS_AHB */
+#define STM32_CLOCK_BUS_AHB1	STM32_CLOCK_BUS_AHB
 
 /** Domain clocks */
 /* RM0038.pdf, §6.3.14 Control/status register (RCC_CSR) */
@@ -33,5 +38,7 @@
 #define CSR_REG		0x34
 
 #define RTC_SEL(val)		STM32_DT_CLOCK_SELECT((val), 17, 16, CSR_REG)
+
+/** @endcond INTERNAL_HIDDEN */
 
 #endif /* ZEPHYR_INCLUDE_DT_BINDINGS_CLOCK_STM32L1_CLOCK_H_ */

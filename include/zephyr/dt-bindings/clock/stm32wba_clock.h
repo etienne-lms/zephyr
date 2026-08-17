@@ -8,6 +8,8 @@
 
 #include "stm32_common_clocks.h"
 
+/** @cond INTERNAL_HIDDEN */
+
 /** Peripheral clock sources */
 
 /* RM0493, Figure 34, clock tree */
@@ -40,13 +42,16 @@
 #define STM32_CLOCK_BUS_AHB2    0x08C
 #define STM32_CLOCK_BUS_AHB4    0x094
 #define STM32_CLOCK_BUS_AHB5    0x098
-#define STM32_CLOCK_BUS_APB1    0x09C
+#define STM32_CLOCK_BUS_APB1_1  0x09C
 #define STM32_CLOCK_BUS_APB1_2  0x0A0
 #define STM32_CLOCK_BUS_APB2    0x0A4
 #define STM32_CLOCK_BUS_APB7    0x0A8
 
 #define STM32_PERIPH_BUS_MIN	STM32_CLOCK_BUS_AHB1
 #define STM32_PERIPH_BUS_MAX	STM32_CLOCK_BUS_APB7
+
+/** @deprecated Please use STM32_CLOCK_BUS_APB1_1 */
+#define STM32_CLOCK_BUS_APB1	STM32_CLOCK_BUS_APB1_1
 
 /** @brief RCC_CCIPRx register offset (RM0493.pdf) */
 #define CCIPR1_REG		0xE0
@@ -104,5 +109,6 @@
 #define MCO_SEL_PLL1QCLK 9
 #define MCO_SEL_HCLK5 10
 
+/** @endcond INTERNAL_HIDDEN */
 
 #endif /* ZEPHYR_INCLUDE_DT_BINDINGS_CLOCK_STM32WBA_CLOCK_H_ */

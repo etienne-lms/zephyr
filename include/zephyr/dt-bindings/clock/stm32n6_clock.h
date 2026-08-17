@@ -8,6 +8,8 @@
 
 #include "stm32_common_clocks.h"
 
+/** @cond INTERNAL_HIDDEN */
+
 /** Domain clocks */
 
 /* RM0486, Figures 37 and 45 on clock distribution description */
@@ -68,18 +70,27 @@
 #define STM32_CLOCK_BUS_AHB3	0x258
 #define STM32_CLOCK_BUS_AHB4	0x25C
 #define STM32_CLOCK_BUS_AHB5	0x260
-#define STM32_CLOCK_BUS_APB1	0x264
-#define STM32_CLOCK_BUS_APB1_2	0x268
+#define STM32_CLOCK_BUS_APB1L	0x264
+#define STM32_CLOCK_BUS_APB1H	0x268
 #define STM32_CLOCK_BUS_APB2	0x26C
 #define STM32_CLOCK_BUS_APB3	0x270
-#define STM32_CLOCK_BUS_APB4	0x274
-#define STM32_CLOCK_BUS_APB4_2	0x278
+#define STM32_CLOCK_BUS_APB4L	0x274
+#define STM32_CLOCK_BUS_APB4H	0x278
 #define STM32_CLOCK_BUS_APB5	0x27C
 
 #define STM32_CLOCK_LP_BUS_SHIFT	0x40
 
 #define STM32_PERIPH_BUS_MIN	STM32_CLOCK_BUS_MISC
 #define STM32_PERIPH_BUS_MAX	STM32_CLOCK_BUS_APB5
+
+/** @deprecated Please use STM32_CLOCK_BUS_APB1H */
+#define STM32_CLOCK_BUS_APB1	STM32_CLOCK_BUS_APB1L
+/** @deprecated Please use STM32_CLOCK_BUS_APB1H */
+#define STM32_CLOCK_BUS_APB1_2	STM32_CLOCK_BUS_APB1H
+/** @deprecated Please use STM32_CLOCK_BUS_APB4H */
+#define STM32_CLOCK_BUS_APB4	STM32_CLOCK_BUS_APB4L
+/** @deprecated Please use STM32_CLOCK_BUS_APB4H */
+#define STM32_CLOCK_BUS_APB4_2	STM32_CLOCK_BUS_APB4H
 
 /** @brief RCC_CCIPRx register offset (RM0486.pdf) */
 #define CCIPR1_REG		0x144
@@ -222,5 +233,7 @@
 
 /* ADC prescaler division factor helper */
 #define ADC_PRE_DIV(pres)	((pres - 1) & 0xFFU)
+
+/** @endcond INTERNAL_HIDDEN */
 
 #endif /* ZEPHYR_INCLUDE_DT_BINDINGS_CLOCK_STM32N6_CLOCK_H_ */

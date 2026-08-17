@@ -18,10 +18,13 @@
 /** @cond INTERNAL_HIDDEN */
 
 /* RCC bus reset register offset */
-#define STM32_RESET_BUS_AHB0	0x30
+#define STM32_RESET_BUS_AHB	0x30
 #define STM32_RESET_BUS_APB0	0x34
 #define STM32_RESET_BUS_APB1	0x38
 #define STM32_RESET_BUS_APB2	0x3C
+
+/** @deprecated Please use STM32_RESET_BUS_AHB */
+#define STM32_RESET_BUS_AHB0	STM32_RESET_BUS_AHB
 
 /** @endcond */
 

@@ -8,6 +8,8 @@
 
 #include "stm32f4_clock.h"
 
+/** @cond INTERNAL_HIDDEN */
+
 /** @brief RCC_DCKCFGR register offset */
 #define DCKCFGR_REG		0x8C
 
@@ -20,5 +22,7 @@
 #define CK48M_SEL(val)		STM32_DT_CLOCK_SELECT((val), 27, 27, DCKCFGR_REG)
 #define SDMMC_SEL(val)		STM32_DT_CLOCK_SELECT((val), 28, 28, DCKCFGR_REG)
 #define DSI_SEL(val)		STM32_DT_CLOCK_SELECT((val), 29, 29, DCKCFGR_REG)
+
+/** @endcond */
 
 #endif /* ZEPHYR_INCLUDE_DT_BINDINGS_CLOCK_STM32F427_CLOCK_H_ */

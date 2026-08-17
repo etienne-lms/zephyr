@@ -8,14 +8,23 @@
 
 #include "stm32_common_clocks.h"
 
-/** Bus gatting clocks */
-#define STM32_CLOCK_BUS_AHB1    0x48
-#define STM32_CLOCK_BUS_IOP     0x4C
-#define STM32_CLOCK_BUS_APB1    0x58
-#define STM32_CLOCK_BUS_APB1_2  0x60
+/** @cond INTERNAL_HIDDEN */
 
-#define STM32_PERIPH_BUS_MIN	STM32_CLOCK_BUS_AHB1
-#define STM32_PERIPH_BUS_MAX	STM32_CLOCK_BUS_APB1_2
+/** Bus gatting clocks */
+#define STM32_CLOCK_BUS_AHB     0x48
+#define STM32_CLOCK_BUS_IOP     0x4C
+#define STM32_CLOCK_BUS_APB_1   0x58
+#define STM32_CLOCK_BUS_APB_2   0x60
+
+#define STM32_PERIPH_BUS_MIN	STM32_CLOCK_BUS_AHB
+#define STM32_PERIPH_BUS_MAX	STM32_CLOCK_BUS_APB_2
+
+/** @deprecated Please use STM32_CLOCK_BUS_AHB */
+#define STM32_CLOCK_BUS_AHB1	STM32_CLOCK_BUS_AHB
+/** @deprecated Please use STM32_CLOCK_BUS_APB_1 */
+#define STM32_CLOCK_BUS_APB1	STM32_CLOCK_BUS_APB_1
+/** @deprecated Please use STM32_CLOCK_BUS_APB_2 */
+#define STM32_CLOCK_BUS_APB1_2	STM32_CLOCK_BUS_APB_2
 
 /** Domain clocks */
 /* RM0503, clock configuration register (RCC_CCIPR) */
@@ -61,5 +70,7 @@
 #define ADC_SEL(val)		STM32_DT_CLOCK_SELECT((val), 29, 28, CCIPR_REG)
 /** BDCR devices */
 #define RTC_SEL(val)		STM32_DT_CLOCK_SELECT((val), 9, 8, BDCR_REG)
+
+/** @endcond INTERNAL_HIDDEN */
 
 #endif /* ZEPHYR_INCLUDE_DT_BINDINGS_CLOCK_STM32U0_CLOCK_H_ */

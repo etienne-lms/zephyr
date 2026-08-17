@@ -18,12 +18,17 @@
 /** @cond INTERNAL_HIDDEN */
 
 /* RCC bus reset register offset */
-#define STM32_RESET_BUS_AHB1  0x28
-#define STM32_RESET_BUS_AHB2  0x2C
-#define STM32_RESET_BUS_AHB3  0x30
-#define STM32_RESET_BUS_APB1L 0x38
-#define STM32_RESET_BUS_APB1H 0x3C
-#define STM32_RESET_BUS_APB2  0x40
+#define STM32_RESET_BUS_AHB1	0x28
+#define STM32_RESET_BUS_AHB2	0x2C
+#define STM32_RESET_BUS_AHB3	0x30
+#define STM32_RESET_BUS_APB1_1	0x38
+#define STM32_RESET_BUS_APB1_2	0x3C
+#define STM32_RESET_BUS_APB2	0x40
+
+/** @deprecated Please use STM32_RESET_BUS_APB1_1 */
+#define STM32_RESET_BUS_APB1L	STM32_RESET_BUS_APB1_1
+/** @deprecated Please use STM32_RESET_BUS_APB1_2 */
+#define STM32_RESET_BUS_APB1H	STM32_RESET_BUS_APB1_2
 
 /** @endcond */
 

@@ -8,16 +8,21 @@
 
 #include "stm32_common_clocks.h"
 
+/** @cond INTERNAL_HIDDEN */
+
 /** Bus clocks */
 #define STM32_CLOCK_BUS_AHB1    0x048
 #define STM32_CLOCK_BUS_AHB2    0x04c
 #define STM32_CLOCK_BUS_AHB3    0x050
-#define STM32_CLOCK_BUS_APB1    0x058
+#define STM32_CLOCK_BUS_APB1_1  0x058
 #define STM32_CLOCK_BUS_APB1_2  0x05c
 #define STM32_CLOCK_BUS_APB2    0x060
 
 #define STM32_PERIPH_BUS_MIN	STM32_CLOCK_BUS_AHB1
 #define STM32_PERIPH_BUS_MAX	STM32_CLOCK_BUS_APB2
+
+/** @deprecated Please use STM32_CLOCK_BUS_APB1_1 */
+#define STM32_CLOCK_BUS_APB1	STM32_CLOCK_BUS_APB1_1
 
 /** Domain clocks */
 /* RM0440, § Clock configuration register (RCC_CCIPRx) */
@@ -71,5 +76,7 @@
 #define QSPI_SEL(val)		STM32_DT_CLOCK_SELECT((val), 21, 20, CCIPR2_REG)
 /** BDCR devices */
 #define RTC_SEL(val)		STM32_DT_CLOCK_SELECT((val), 9, 8, BDCR_REG)
+
+/** @endcond */
 
 #endif /* ZEPHYR_INCLUDE_DT_BINDINGS_CLOCK_STM32G4_CLOCK_H_ */
