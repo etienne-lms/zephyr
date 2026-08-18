@@ -19,8 +19,8 @@
 		usart2: serial@40004400 {
 			compatible = "st,stm32-usart", "st,stm32-uart";
 			reg = <0x40004400 0x400>;
-			clocks = <&rcc STM32_CLOCK(APB1, 17)>;
-			resets = <&rctl STM32_RESET(APB1L, 17)>;
+			clocks = <&rcc STM32_CLOCK(APB1_1, 17)>;
+			resets = <&rctl STM32_RESET(APB1_1, 17)>;
 			interrupts = <62 0>;
 			status = "disabled";
 		};
@@ -31,7 +31,7 @@
 				gpio-controller;
 				#gpio-cells = <2>;
 				reg = <0x42021400 0x400>;
-				clocks = <&rcc STM32_CLOCK(AHB2, 5)>;
+				clocks = <&rcc STM32_CLOCK(AHB2_1, 5)>;
 			};
 
 			gpioi: gpio@42022000 {
@@ -39,16 +39,16 @@
 				gpio-controller;
 				#gpio-cells = <2>;
 				reg = <0x42022000 0x400>;
-				clocks = <&rcc STM32_CLOCK(AHB2, 8)>;
+				clocks = <&rcc STM32_CLOCK(AHB2_1, 8)>;
 			};
 		};
 
 		sdmmc2: sdmmc@420c8c00 {
 			compatible = "st,stm32-sdmmc";
 			reg = <0x420c8c00 0x400>;
-			clocks = <&rcc STM32_CLOCK(AHB2, 28)>,
+			clocks = <&rcc STM32_CLOCK(AHB2_1, 28)>,
 				 <&rcc STM32_SRC_HSI48 SDMMC_SEL(0)>;
-			resets = <&rctl STM32_RESET(AHB2L, 28)>;
+			resets = <&rctl STM32_RESET(AHB2_1, 28)>;
 			interrupts = <79 0>;
 			status = "disabled";
 		};
@@ -74,7 +74,7 @@
 			clock-names = "ospix", "ospi-ker", "ospi-mgr";
 			clocks = <&rcc STM32_CLOCK(AHB2_2, 8)>,
 				 <&rcc STM32_SRC_SYSCLK OCTOSPI_SEL(0)>,
-				 <&rcc STM32_CLOCK(AHB2, 21)>;
+				 <&rcc STM32_CLOCK(AHB2_1, 21)>;
 			#address-cells = <1>;
 			#size-cells = <0>;
 			status = "disabled";
@@ -83,7 +83,7 @@
 		ucpd1: ucpd@4000dc00 {
 			compatible = "st,stm32-ucpd";
 			reg = <0x4000dc00 0x400>;
-			clocks = <&rcc STM32_CLOCK(APB1, 23)>;
+			clocks = <&rcc STM32_CLOCK(APB1_1, 23)>;
 			interrupts = <106 0>;
 			status = "disabled";
 		};

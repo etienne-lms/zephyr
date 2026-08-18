@@ -213,7 +213,7 @@
 				gpio-controller;
 				#gpio-cells = <2>;
 				reg = <0x48000000 DT_SIZE_K(1)>;
-				clocks = <&rcc STM32_CLOCK(AHB0, 2)>;
+				clocks = <&rcc STM32_CLOCK(AHB, 2)>;
 			};
 
 			gpiob: gpio@48100000 {
@@ -221,7 +221,7 @@
 				gpio-controller;
 				#gpio-cells = <2>;
 				reg = <0x48100000 DT_SIZE_K(1)>;
-				clocks = <&rcc STM32_CLOCK(AHB0, 3)>;
+				clocks = <&rcc STM32_CLOCK(AHB, 3)>;
 			};
 		};
 
@@ -295,7 +295,7 @@
 			compatible = "st,stm32-dma-v2bis";
 			#dma-cells = <2>;
 			reg = <0x48700000 256>;
-			clocks = <&rcc STM32_CLOCK(AHB0, 0)>;
+			clocks = <&rcc STM32_CLOCK(AHB, 0)>;
 			interrupts = <17 0>, <17 0>, <17 0>, <17 0>, <17 0>, <17 0>, <17 0>, <17 0>;
 			dma-requests = <8>;
 			dma-offset = <0>;
@@ -308,7 +308,7 @@
 			/* `clocks` property is identical between DMA and DMAMUX
 			 * because they share a single common bit in RCC registers
 			 */
-			clocks = <&rcc STM32_CLOCK(AHB0, 0)>;
+			clocks = <&rcc STM32_CLOCK(AHB, 0)>;
 			#dma-cells = <3>;
 			dma-channels = <8>;
 			dma-generators = <1>;
@@ -327,7 +327,7 @@
 		rng: rng@48600000 {
 			compatible = "st,stm32-rng-noirq";
 			reg = <0x48600000 DT_SIZE_K(4)>;
-			clocks = <&rcc STM32_CLOCK(AHB0, 18)>;
+			clocks = <&rcc STM32_CLOCK(AHB, 18)>;
 			generation-delay-ns = <1250>; /* 1.25us */
 			status = "disabled";
 		};
@@ -342,8 +342,8 @@
 		crc: crc@48200000 {
 			compatible = "st,stm32-crc";
 			reg = <0x48200000 DT_SIZE_K(1)>;
-			clocks = <&rcc STM32_CLOCK(AHB0, 12)>;
-			resets = <&rctl STM32_RESET(AHB0, 12)>;
+			clocks = <&rcc STM32_CLOCK(AHB, 12)>;
+			resets = <&rctl STM32_RESET(AHB, 12)>;
 			status = "disabled";
 		};
 	};

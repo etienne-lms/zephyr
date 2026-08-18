@@ -106,7 +106,7 @@
 			compatible = "st,stm32-flash-controller", "st,stm32f1-flash-controller";
 			reg = <0x40023c00 0x400>;
 			interrupts = <4 0>;
-			clocks = <&rcc STM32_CLOCK(AHB1, 15)>;
+			clocks = <&rcc STM32_CLOCK(AHB, 15)>;
 
 			#address-cells = <1>;
 			#size-cells = <1>;
@@ -562,7 +562,7 @@
 				gpio-controller;
 				#gpio-cells = <2>;
 				reg = <0x40020000 0x400>;
-				clocks = <&rcc STM32_CLOCK(AHB1, 0)>;
+				clocks = <&rcc STM32_CLOCK(AHB, 0)>;
 			};
 
 			gpiob: gpio@40020400 {
@@ -570,7 +570,7 @@
 				gpio-controller;
 				#gpio-cells = <2>;
 				reg = <0x40020400 0x400>;
-				clocks = <&rcc STM32_CLOCK(AHB1, 1)>;
+				clocks = <&rcc STM32_CLOCK(AHB, 1)>;
 			};
 
 			gpioc: gpio@40020800 {
@@ -578,7 +578,7 @@
 				gpio-controller;
 				#gpio-cells = <2>;
 				reg = <0x40020800 0x400>;
-				clocks = <&rcc STM32_CLOCK(AHB1, 2)>;
+				clocks = <&rcc STM32_CLOCK(AHB, 2)>;
 			};
 
 			gpiod: gpio@40020c00 {
@@ -586,7 +586,7 @@
 				gpio-controller;
 				#gpio-cells = <2>;
 				reg = <0x40020c00 0x400>;
-				clocks = <&rcc STM32_CLOCK(AHB1, 3)>;
+				clocks = <&rcc STM32_CLOCK(AHB, 3)>;
 			};
 
 			gpioe: gpio@40021000 {
@@ -594,7 +594,7 @@
 				gpio-controller;
 				#gpio-cells = <2>;
 				reg = <0x40021000 0x400>;
-				clocks = <&rcc STM32_CLOCK(AHB1, 4)>;
+				clocks = <&rcc STM32_CLOCK(AHB, 4)>;
 			};
 
 			gpioh: gpio@40021400 {
@@ -602,7 +602,7 @@
 				gpio-controller;
 				#gpio-cells = <2>;
 				reg = <0x40021400 0x400>;
-				clocks = <&rcc STM32_CLOCK(AHB1, 5)>;
+				clocks = <&rcc STM32_CLOCK(AHB, 5)>;
 			};
 		};
 
@@ -629,7 +629,7 @@
 			compatible = "st,stm32-dma-v2bis";
 			#dma-cells = <2>;
 			reg = <0x40026000 0x400>;
-			clocks = <&rcc STM32_CLOCK(AHB1, 24)>;
+			clocks = <&rcc STM32_CLOCK(AHB, 24)>;
 			interrupts = <11 0>, <12 0>, <13 0>, <14 0>, <15 0>, <16 0>, <17 0>;
 			status = "disabled";
 		};

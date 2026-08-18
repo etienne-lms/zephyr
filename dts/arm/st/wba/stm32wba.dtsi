@@ -419,7 +419,7 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x40005400 0x400>;
-			clocks = <&rcc STM32_CLOCK(APB1, 21)>;
+			clocks = <&rcc STM32_CLOCK(APB1_1, 21)>;
 			interrupts = <43 0>, <44 0>;
 			interrupt-names = "event", "error";
 			status = "disabled";
@@ -440,9 +440,9 @@
 		timers2: timers@40000000 {
 			compatible = "st,stm32-timers";
 			reg = <0x40000000 0x400>;
-			clocks = <&rcc STM32_CLOCK(APB1, 0)>,
+			clocks = <&rcc STM32_CLOCK(APB1_1, 0)>,
 				 <&rcc STM32_SRC_TIMPCLK1 NO_SEL>;
-			resets = <&rctl STM32_RESET(APB1L, 0)>;
+			resets = <&rctl STM32_RESET(APB1_1, 0)>;
 			interrupts = <41 0>;
 			interrupt-names = "global";
 			st,prescaler = <0>;
@@ -540,7 +540,7 @@
 			#size-cells = <0>;
 			reg = <0x40009400 0x400>;
 			clocks = <&rcc STM32_CLOCK(APB1_2, 5)>;
-			resets = <&rctl STM32_RESET(APB1H, 5)>;
+			resets = <&rctl STM32_RESET(APB1_2, 5)>;
 			interrupts = <50 0>;
 			interrupt-names = "wakeup";
 			status = "disabled";

@@ -13,8 +13,8 @@
 		aes: crypto@40026000 {
 			compatible = "st,stm32-aes";
 			reg = <0x40026000 0x400>;
-			clocks = <&rcc STM32_CLOCK(AHB1, 16)>;
-			resets = <&rctl STM32_RESET(AHB1, 16)>;
+			clocks = <&rcc STM32_CLOCK(AHB, 16)>;
+			resets = <&rctl STM32_RESET(AHB, 16)>;
 			interrupts = <31 0>;
 			status = "disabled";
 		};
@@ -23,7 +23,7 @@
 			compatible = "st,stm32-rng";
 			reg = <0x40025000 0x400>;
 			interrupts = <31 0>;
-			clocks = <&rcc STM32_CLOCK(AHB1, 18)>;
+			clocks = <&rcc STM32_CLOCK(AHB, 18)>;
 			status = "disabled";
 		};
 	};

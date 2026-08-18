@@ -17,7 +17,7 @@
 			reg-names = "m_can", "message_ram";
 			interrupts = <86 0>, <87 0>;
 			interrupt-names = "int0", "int1";
-			clocks = <&rcc STM32_CLOCK(APB1, 25)>;
+			clocks = <&rcc STM32_CLOCK(APB1_1, 25)>;
 			bosch,mram-cfg = <0x350 28 8 3 3 0 3 3>;
 			status = "disabled";
 		};
@@ -87,8 +87,8 @@
 		uart5: serial@40005000 {
 			compatible = "st,stm32-uart";
 			reg = <0x40005000 0x400>;
-			clocks = <&rcc STM32_CLOCK(APB1, 20)>;
-			resets = <&rctl STM32_RESET(APB1L, 20)>;
+			clocks = <&rcc STM32_CLOCK(APB1_1, 20)>;
+			resets = <&rctl STM32_RESET(APB1_1, 20)>;
 			interrupts = <53 0>;
 			status = "disabled";
 		};

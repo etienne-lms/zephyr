@@ -34,7 +34,7 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x40005800 0x400>;
-			clocks = <&rcc STM32_CLOCK(APB1, 22)>;
+			clocks = <&rcc STM32_CLOCK(APB1_1, 22)>;
 			interrupts = <33 0>, <34 0>;
 			interrupt-names = "event", "error";
 			status = "disabled";
@@ -45,7 +45,7 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x40003800 0x400>;
-			clocks = <&rcc STM32_CLOCK(APB1, 14)>;
+			clocks = <&rcc STM32_CLOCK(APB1_1, 14)>;
 			interrupts = <36 0>;
 			st,spi-data-width = "full-4-to-16-bit";
 			status = "disabled";
@@ -54,8 +54,8 @@
 		usart3: serial@40004800 {
 			compatible = "st,stm32-usart", "st,stm32-uart";
 			reg = <0x40004800 0x400>;
-			clocks = <&rcc STM32_CLOCK(APB1, 18)>;
-			resets = <&rctl STM32_RESET(APB1L, 18)>;
+			clocks = <&rcc STM32_CLOCK(APB1_1, 18)>;
+			resets = <&rctl STM32_RESET(APB1_1, 18)>;
 			interrupts = <39 0>;
 			status = "disabled";
 		};

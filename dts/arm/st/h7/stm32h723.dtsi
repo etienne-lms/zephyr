@@ -128,7 +128,7 @@
 			compatible = "st,stm32h7-fdcan";
 			reg = <0x4000d400 0x400>, <0x4000ac00 0x9f0>;
 			reg-names = "m_can", "message_ram";
-			clocks = <&rcc STM32_CLOCK(APB1_2, 8)>;
+			clocks = <&rcc STM32_CLOCK(APB1H, 8)>;
 			interrupts = <159 0>, <160 0>, <63 0>;
 			interrupt-names = "int0", "int1", "calib";
 			bosch,mram-cfg = <0x6a0 28 8 6 0 0 3 3>;
@@ -146,7 +146,7 @@
 		timers23: timers@4000e000 {
 			compatible = "st,stm32-timers";
 			reg = <0x4000e000 0x400>;
-			clocks = <&rcc STM32_CLOCK(APB1_2, 24)>,
+			clocks = <&rcc STM32_CLOCK(APB1H, 24)>,
 				 <&rcc STM32_SRC_TIMPCLK1 NO_SEL>;
 			resets = <&rctl STM32_RESET(APB1H, 24)>;
 			interrupts = <161 0>;
@@ -175,7 +175,7 @@
 		timers24: timers@4000e400 {
 			compatible = "st,stm32-timers";
 			reg = <0x4000e400 0x400>;
-			clocks = <&rcc STM32_CLOCK(APB1_2, 25)>,
+			clocks = <&rcc STM32_CLOCK(APB1H, 25)>,
 				 <&rcc STM32_SRC_TIMPCLK1 NO_SEL>;
 			resets = <&rctl STM32_RESET(APB1H, 25)>;
 			interrupts = <162 0>;

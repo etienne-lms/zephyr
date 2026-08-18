@@ -119,7 +119,7 @@
 			interrupts = <152 0>, <153 0>;
 			interrupt-names = "int0", "int1";
 			/* common clock FDCAN 1 & 2 & 3 */
-			clocks = <&rcc STM32_CLOCK(APB1_2, 9)>,
+			clocks = <&rcc STM32_CLOCK(APB1H, 9)>,
 				 <&rcc STM32_SRC_HSE FDCAN_SEL(0)>;
 			bosch,mram-cfg = <0x6a0 28 8 3 3 0 3 3>;
 			status = "disabled";

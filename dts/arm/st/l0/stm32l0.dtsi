@@ -382,7 +382,7 @@
 			#dma-cells = <3>;
 			reg = <0x40020000 0x400>;
 			interrupts = <9 0>, <10 0>, <10 0>, <11 0>, <11 0>, <11 0>, <11 0>;
-			clocks = <&rcc STM32_CLOCK(AHB1, 0)>;
+			clocks = <&rcc STM32_CLOCK(AHB, 0)>;
 			status = "disabled";
 		};
 
@@ -394,8 +394,8 @@
 		crc: crc@40023000 {
 			compatible = "st,stm32-crc";
 			reg = <0x40023000 0x400>;
-			clocks = <&rcc STM32_CLOCK(AHB1, 12)>;
-			resets = <&rctl STM32_RESET(AHB1, 12)>;
+			clocks = <&rcc STM32_CLOCK(AHB, 12)>;
+			resets = <&rctl STM32_RESET(AHB, 12)>;
 			status = "disabled";
 		};
 	};

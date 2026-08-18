@@ -9,8 +9,8 @@
 		aes: crypto@420c0000 {
 			compatible = "st,stm32-aes";
 			reg = <0x420c0000 0x400>;
-			clocks = <&rcc STM32_CLOCK(AHB2, 16)>;
-			resets = <&rctl STM32_RESET(AHB2L, 16)>;
+			clocks = <&rcc STM32_CLOCK(AHB2_1, 16)>;
+			resets = <&rctl STM32_RESET(AHB2_1, 16)>;
 			interrupts = <93 0>;
 			status = "disabled";
 		};
