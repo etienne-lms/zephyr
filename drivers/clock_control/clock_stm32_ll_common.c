@@ -470,9 +470,20 @@ static int stm32_clock_control_get_subsys_rate(const struct device *clock,
 		*rate = ahb3_clock;
 		break;
 #endif
+#if defined(STM32_CLOCK_BUS_APB1)
 	case STM32_CLOCK_BUS_APB1:
+#endif
+#if defined(STM32_CLOCK_BUS_APB1_1) && !defined(STM32_CLOCK_BUS_APB1)
+	case STM32_CLOCK_BUS_APB1_1:
+#endif
+#if defined(STM32_CLOCK_BUS_APB1L) && !defined(STM32_CLOCK_BUS_APB1)
+	case STM32_CLOCK_BUS_APB1L:
+#endif
 #if defined(STM32_CLOCK_BUS_APB1_2)
 	case STM32_CLOCK_BUS_APB1_2:
+#endif
+#if defined(STM32_CLOCK_BUS_APB1H) && !defined(STM32_CLOCK_BUS_APB1_2)
+	case STM32_CLOCK_BUS_APB1H:
 #endif
 #if defined(STM32_SRC_PCLK)
 	case STM32_SRC_PCLK:

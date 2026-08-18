@@ -205,14 +205,14 @@ static int stm32_clock_control_get_subsys_rate(const struct device *dev,
 	ARG_UNUSED(dev);
 
 	switch (pclken->bus) {
-	case STM32_CLOCK_BUS_AHB1:
+	case STM32_CLOCK_BUS_AHB1_1:
 	case STM32_CLOCK_BUS_AHB1_2:
-	case STM32_CLOCK_BUS_AHB2:
+	case STM32_CLOCK_BUS_AHB2_2:
 	case STM32_CLOCK_BUS_AHB2_2:
 	case STM32_SRC_HCLK:
 		*rate = ahb_clock;
 		break;
-	case STM32_CLOCK_BUS_APB1:
+	case STM32_CLOCK_BUS_APB1_1:
 	case STM32_CLOCK_BUS_APB1_2:
 	case STM32_SRC_PCLK1:
 		*rate = apb1_clock;

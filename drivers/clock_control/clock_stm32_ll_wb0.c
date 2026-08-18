@@ -433,7 +433,7 @@ static int stm32_clock_control_get_subsys_rate(const struct device *dev,
 		sysclk = STM32_HSI_FREQ;
 	}
 
-	/* Obtain CLK_SYS (AHB0) frequency by using the CLKSYSDIV prescaler value.
+	/* Obtain CLK_SYS (AHB) frequency by using the CLKSYSDIV prescaler value.
 	 *
 	 * NOTE: LL_RCC_GetRC64MPLLPrescaler is strictly identical to LL_RCC_GetDirectHSEPrescaler
 	 * and can be used regardless of which source is driving the high-speed clock tree.
@@ -465,8 +465,8 @@ static int stm32_clock_control_get_subsys_rate(const struct device *dev,
 	}
 
 	switch (pclken->bus) {
-	case STM32_CLOCK_BUS_AHB0:
-	/* All peripherals on AHB0 are clocked by CLK_SYS. */
+	case STM32_CLOCK_BUS_AHB:
+	/* All peripherals on AHB are clocked by CLK_SYS. */
 		*rate = clk_sys;
 		break;
 	case STM32_CLOCK_BUS_APB0:

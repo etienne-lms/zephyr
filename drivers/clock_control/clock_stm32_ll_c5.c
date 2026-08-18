@@ -254,7 +254,7 @@ static int stm32_clock_control_get_subsys_rate(const struct device *dev,
 	case STM32_SRC_HCLK:
 		*rate = ahb_clock;
 		break;
-	case STM32_CLOCK_BUS_APB1:
+	case STM32_CLOCK_BUS_APB1_1:
 	case STM32_CLOCK_BUS_APB1_2:
 	case STM32_SRC_PCLK1:
 		*rate = apb1_clock;

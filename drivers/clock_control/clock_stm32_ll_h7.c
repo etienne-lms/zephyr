@@ -547,9 +547,13 @@ static int stm32_clock_control_get_subsys_rate(const struct device *clock,
 #endif /* CONFIG_SOC_SERIES_STM32H7RSX */
 		*rate = ahb_clock;
 		break;
-	case STM32_CLOCK_BUS_APB1:
-	case STM32_CLOCK_BUS_APB1_2:
+#if defined(CONFIG_SOC_SERIES_STM32H7X)
+	case STM32_CLOCK_BUS_APB1L:
+	case STM32_CLOCK_BUS_APB1H:
+#endif /* CONFIG_SOC_SERIES_STM32H7X */
 #if defined(CONFIG_SOC_SERIES_STM32H7RSX)
+	case STM32_CLOCK_BUS_APB1_1:
+	case STM32_CLOCK_BUS_APB1_2:
 	/* PCLK1 is a possible source clock for some peripherals */
 	case STM32_SRC_PCLK1:
 #endif /* CONFIG_SOC_SERIES_STM32H7RSX */

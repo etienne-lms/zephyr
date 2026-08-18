@@ -309,8 +309,8 @@ static int stm32_clock_control_get_subsys_rate(const struct device *dev,
 		*rate = ahb_clock;
 		break;
 	case STM32_SRC_PCLK1:
-	case STM32_CLOCK_BUS_APB1:
-	case STM32_CLOCK_BUS_APB1_2:
+	case STM32_CLOCK_BUS_APB1L:
+	case STM32_CLOCK_BUS_APB1H:
 		*rate = get_bus_clock(ahb_clock, STM32_APB1_PRESCALER);
 		break;
 	case STM32_SRC_PCLK2:
@@ -318,8 +318,8 @@ static int stm32_clock_control_get_subsys_rate(const struct device *dev,
 		*rate = get_bus_clock(ahb_clock, STM32_APB2_PRESCALER);
 		break;
 	case STM32_SRC_PCLK4:
-	case STM32_CLOCK_BUS_APB4:
-	case STM32_CLOCK_BUS_APB4_2:
+	case STM32_CLOCK_BUS_APB4L:
+	case STM32_CLOCK_BUS_APB4H:
 		*rate = get_bus_clock(ahb_clock, STM32_APB4_PRESCALER);
 		break;
 	case STM32_SRC_PCLK5:
