@@ -25,14 +25,6 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(crypto_stm32);
 
-#if DT_HAS_COMPAT_STATUS_OKAY(st_stm32_cryp)
-#define DT_DRV_COMPAT st_stm32_cryp
-#elif DT_HAS_COMPAT_STATUS_OKAY(st_stm32_aes)
-#define DT_DRV_COMPAT st_stm32_aes
-#else
-#error No STM32 HW Crypto Accelerator in device tree
-#endif
-
 #define CRYP_SUPPORT (CAP_RAW_KEY | CAP_SEPARATE_IO_BUFS | CAP_SYNC_OPS | \
 		      CAP_NO_IV_PREFIX)
 #define BLOCK_LEN_BYTES 16
@@ -59,15 +51,7 @@ LOG_MODULE_REGISTER(crypto_stm32);
 #define STM32_CRYPTO_TYPEDEF            AES_TypeDef
 #endif
 
-/*
- * HAL2 has its own IT API (HAL_AES_{En,De}crypt_IT() on hal_aes_handle_t, with
- * HAL_AES_OutCpltCallback()/HAL_AES_ErrorCallback()), incompatible with the
- * HAL_CRYP_{En,De}crypt_IT()/HAL_CRYP_*Callback() on CRYP_HandleTypeDef used below.
- * Not implemented here yet, so keep HAL2 on the polling do_aes() path.
- */
-#if !DT_HAS_COMPAT_STATUS_OKAY(st_stm32l4_aes) && !defined(CONFIG_STM32_HAL2) &&                   \
-	DT_INST_IRQ_HAS_IDX(0, 0)
-#define STM32_CRYP_USE_ISR
+#ifdef STM32_CRYP_USE_ISR
 static void stm32_cryp_isr(const struct device *dev);
 #endif
 
@@ -413,6 +397,8 @@ static int do_aes_it(struct cipher_ctx *ctx, hal_cryp_aes_it_op_func_t fn_isr,
 
 	k_sem_reset(&data->complete_sem);
 
+	data->isr_session.error = 0;
+
 	if (fn_isr(&data->hcryp, (uint32_t *)in, rounded_size, (uint32_t *)out) != HAL_OK) {
 		return -EIO;
 	}
@@ -438,8 +424,8 @@ static int do_aes_it(struct cipher_ctx *ctx, hal_cryp_aes_it_op_func_t fn_isr,
 		return -EIO;
 	}
 
-	if (remaining == 0) {
-		return 0;
+	if (remaining == 0 || data->isr_session.error < 0) {
+		return data->isr_session.error;
 	}
 
 	return do_aes_partial(data, fn_poll, session->mode, in + rounded_size, remaining,
@@ -1429,7 +1415,10 @@ void HAL_CRYP_OutCpltCallback(CRYP_HandleTypeDef *hcryp)
 
 void HAL_CRYP_ErrorCallback(CRYP_HandleTypeDef *hcryp)
 {
-	ARG_UNUSED(hcryp);
+	struct crypto_stm32_data *data = CONTAINER_OF(hcryp, struct crypto_stm32_data, hcryp);
+
+	data->isr_session.error = -EIO;
+
 	k_sem_give(&crypto_stm32_dev_data.complete_sem);
 }
 #endif /* STM32_CRYP_USE_ISR */
