@@ -44,6 +44,12 @@ typedef CRYP_HandleTypeDef	hal_crypt_handle_t;
 /* Maximum supported key length is 256 bits */
 #define CRYPTO_STM32_AES_MAX_KEY_LEN (256 / 8)
 
+#if defined(STM32_CRYP_USE_ISR)
+/* Same operation as hal_cryp_aes_op_func_t, without the timeout: completion is asynchronous. */
+typedef stm32_status_t (*hal_cryp_aes_it_op_func_t)(hal_crypt_handle_t *hcryp, uint32_t *in_data,
+						    uint16_t size, uint32_t *out_data);
+#endif /* STM32_CRYP_USE_ISR */
+
 struct crypto_stm32_config {
 	const struct reset_dt_spec reset;
 	struct stm32_pclken pclken;
@@ -56,6 +62,11 @@ struct crypto_stm32_data {
 	struct k_sem complete_sem;
 #if defined(STM32_CRYP_USE_ISR)
 	struct {
+		/* Parameters for multipart sequence (HAL 16 bit size limitation) */
+		hal_cryp_aes_it_op_func_t fn;
+		size_t remaining;
+		uint8_t *in;
+		uint8_t *out;
 		int error;
 	} isr_session;
 #endif

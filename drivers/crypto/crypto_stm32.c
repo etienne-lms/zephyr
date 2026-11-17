@@ -375,10 +375,6 @@ static int do_aes_it(struct cipher_ctx *ctx, hal_cryp_aes_it_op_func_t fn_isr,
 {
 	struct crypto_stm32_data *data = CRYPTO_STM32_DATA(ctx->device);
 	struct crypto_stm32_session *session = CRYPTO_STM32_SESSN(ctx);
-	size_t rounded_size = ROUND_DOWN(in_len, BLOCK_LEN_BYTES);
-	size_t remaining = in_len - rounded_size;
-	uint8_t *out = out_buf;
-	uint8_t *in = in_buf;
 
 	if (in_len != 0 && in_buf == NULL) {
 		return -EINVAL;
@@ -399,37 +395,62 @@ static int do_aes_it(struct cipher_ctx *ctx, hal_cryp_aes_it_op_func_t fn_isr,
 
 	data->isr_session.error = 0;
 
-	if (fn_isr(&data->hcryp, (uint32_t *)in, rounded_size, (uint32_t *)out) != HAL_OK) {
-		return -EIO;
+	/* HAL API functions all rely on a 16 bit argument for the data size hence can
+	 * process up to 64kByte at most.
+	 */
+	uint16_t chunk_size = ROUND_DOWN(MIN(in_len, UINT16_MAX), BLOCK_LEN_BYTES);
+
+	/* HAL API functions always reads input data as full AES blocks and writes output data
+	 * either by 32 bit words or as full AES blocks. When data is not block aligned, we need
+	 * a bounce buffer. Process only block aligned data in interrupt mode.
+	 */
+	size_t isr_session_size = ROUND_DOWN(in_len, BLOCK_LEN_BYTES);
+
+	if (isr_session_size > chunk_size) {
+		data->isr_session.fn = fn_isr;
+		data->isr_session.remaining = isr_session_size - chunk_size;
+	} else {
+		data->isr_session.remaining = 0;
 	}
 
-	if ((k_sem_take(&data->complete_sem, K_MSEC(1000)) != 0) ||
-	    (data->hcryp.State != HAL_CRYP_STATE_READY)) {
-		LOG_WRN("CRYP IT operation failed, falling back to polling");
-		/*
-		 * Leaving CRYP completion/error interrupts armed would let a later polling
-		 * operation on this same peripheral (e.g. GCM/CCM) spuriously re-enter
-		 * this driver's ISR and corrupt its FIFO access.
-		 */
+	data->isr_session.in = in_buf + chunk_size;
+	data->isr_session.out = out_buf + chunk_size;
+	data->isr_session.error = 0;
+
+	if (chunk_size != 0) {
+		if (fn_isr(&data->hcryp, (uint32_t *)in_buf, chunk_size, (uint32_t *)out_buf) !=
+		    HAL_OK) {
+			return -EIO;
+		}
+
+		if ((k_sem_take(&data->complete_sem, K_MSEC(1000)) != 0) ||
+		    (data->hcryp.State != HAL_CRYP_STATE_READY)) {
+			LOG_WRN("CRYP IT operation failed, falling back to polling");
+			/*
+			 * Leaving CRYP completion/error interrupts armed would let a later polling
+			 * operation on this same peripheral (e.g. GCM/CCM) spuriously re-enter
+			 * this driver's ISR and corrupt its FIFO access.
+			 */
 #if defined(CRYP_IT_INI) && defined(CRYP_IT_OUTI)
-		__HAL_CRYP_DISABLE_IT(&data->hcryp, CRYP_IT_INI | CRYP_IT_OUTI);
+			__HAL_CRYP_DISABLE_IT(&data->hcryp, CRYP_IT_INI | CRYP_IT_OUTI);
 #elif defined(CRYP_IT_CCFIE) && defined(CRYP_IT_ERRIE)
-		__HAL_CRYP_DISABLE_IT(&data->hcryp, CRYP_IT_CCFIE | CRYP_IT_ERRIE);
+			__HAL_CRYP_DISABLE_IT(&data->hcryp, CRYP_IT_CCFIE | CRYP_IT_ERRIE);
 #elif defined(CRYP_IT_CCFIE)
-		__HAL_CRYP_DISABLE_IT(&data->hcryp, CRYP_IT_CCFIE);
+			__HAL_CRYP_DISABLE_IT(&data->hcryp, CRYP_IT_CCFIE);
 #endif
-		__HAL_CRYP_DISABLE(&data->hcryp);
-		data->hcryp.State = HAL_CRYP_STATE_READY;
-		__HAL_UNLOCK(&data->hcryp);
-		return -EIO;
+			__HAL_CRYP_DISABLE(&data->hcryp);
+			data->hcryp.State = HAL_CRYP_STATE_READY;
+			__HAL_UNLOCK(&data->hcryp);
+			return -EIO;
+		}
 	}
 
-	if (remaining == 0 || data->isr_session.error < 0) {
+	if (data->isr_session.error < 0) {
 		return data->isr_session.error;
 	}
 
-	return do_aes_partial(data, fn_poll, session->mode, in + rounded_size, remaining,
-			      out + rounded_size);
+	return do_aes_partial(data, fn_poll, session->mode, data->isr_session.in,
+			      in_len - isr_session_size, data->isr_session.out);
 }
 #endif /* STM32_CRYP_USE_ISR */
 
@@ -1409,7 +1430,31 @@ static void stm32_cryp_isr(const struct device *dev)
 
 void HAL_CRYP_OutCpltCallback(CRYP_HandleTypeDef *hcryp)
 {
-	ARG_UNUSED(hcryp);
+	struct crypto_stm32_data *data = CONTAINER_OF(hcryp, struct crypto_stm32_data, hcryp);
+
+	if (data->isr_session.remaining == 0) {
+		data->isr_session.error = 0;
+	} else {
+		const size_t max_len = ROUND_DOWN(UINT16_MAX, BLOCK_LEN_BYTES);
+		uint32_t *out = (uint32_t *)data->isr_session.out;
+		uint32_t *in = (uint32_t *)data->isr_session.in;
+		uint16_t in_len;
+
+		__ASSERT_NO_MSG(data->isr_session.fn != NULL);
+		__ASSERT_NO_MSG((data->isr_session.remaining % BLOCK_LEN_BYTES) == 0);
+
+		in_len = MIN(max_len, data->isr_session.remaining);
+		data->isr_session.remaining -= in_len;
+		data->isr_session.out += in_len;
+		data->isr_session.in += in_len;
+
+		if (data->isr_session.fn(hcryp, in, in_len, out) == HAL_OK) {
+			return;
+		}
+
+		data->isr_session.error = -EIO;
+	}
+
 	k_sem_give(&crypto_stm32_dev_data.complete_sem);
 }
 
