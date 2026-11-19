@@ -235,6 +235,33 @@ static int hal1_l4_set_config(struct crypto_stm32_data *const data, crypt_config
 }
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(st_stm32l4_aes) */
 
+static int do_aes_partial(struct crypto_stm32_data *dev_data, hal_cryp_aes_op_func_t fn,
+			  enum cipher_mode mode, uint8_t *in_buf, size_t in_len, uint8_t *out_buf)
+{
+	uint8_t block[BLOCK_LEN_BYTES] = { };
+	uint16_t size = (uint16_t)in_len;
+	uint16_t hal_size;
+
+	__ASSERT_NO_MSG(in_len < sizeof(block));
+
+	memcpy(block, in_buf, size);
+
+	if (mode == CRYPTO_CIPHER_MODE_CTR) {
+		hal_size = BLOCK_LEN_BYTES;
+	} else {
+		hal_size = size;
+	}
+
+	if (fn(&dev_data->hcryp, block, hal_size, block, HAL_MAX_DELAY) != HAL_OK) {
+		LOG_ERR("Encryption/decryption error");
+		return -EIO;
+	}
+
+	memcpy(out_buf, block, size);
+
+	return 0;
+}
+
 static int do_aes(struct cipher_ctx *ctx, hal_cryp_aes_op_func_t fn, uint8_t *in_buf,
 		  size_t in_len, uint8_t *out_buf)
 {
@@ -262,12 +289,19 @@ static int do_aes(struct cipher_ctx *ctx, hal_cryp_aes_op_func_t fn, uint8_t *in
 		return ret;
 	}
 
-	if (fn(&data->hcryp, in_buf, in_len, out_buf, HAL_MAX_DELAY) != HAL_OK) {
+	size_t rounded_size = ROUND_DOWN(in_len, BLOCK_LEN_BYTES);
+
+	if (fn(&data->hcryp, in_buf, rounded_size, out_buf, HAL_MAX_DELAY) != HAL_OK) {
 		LOG_ERR("Encryption/decryption error");
 		return -EIO;
 	}
 
-	return 0;
+	if (in_len == rounded_size) {
+		return 0;
+	}
+
+	return do_aes_partial(data, fn, session->mode, in_buf + rounded_size, in_len - rounded_size,
+			      out_buf + rounded_size);
 }
 
 #if !DT_HAS_COMPAT_STATUS_OKAY(st_stm32l4_aes)
@@ -452,6 +486,14 @@ static int crypto_stm32_ctr_encrypt(struct cipher_ctx *ctx,
 		return -EINVAL;
 	}
 
+#if DT_HAS_COMPAT_STATUS_OKAY(st_stm32l4_aes) && !defined(CONFIG_SOC_SERIES_STM32L4X)
+	/* stm32l0xx and stm32l1xx write to output buffer by 16 byte burst */
+	if (ROUND_UP(pkt->in_len, BLOCK_LEN_BYTES) > pkt->out_buf_max) {
+		LOG_ERR("STM32L0/L1 require an output buffer size multiple of 16 bytes");
+		return -ENOTSUP;
+	}
+#endif
+
 	/* Counter is at most 32 bit and shall not wrap for the current operation */
 	if ((ctx->mode_params.ctr_info.ctr_len % 8) != 0 || ctr_len_byte > sizeof(uint32_t) ||
 	    DIV_ROUND_UP(pkt->in_len, BLOCK_LEN_BYTES) > BIT64(ctr_len_byte)) {
@@ -490,6 +532,14 @@ static int crypto_stm32_ctr_decrypt(struct cipher_ctx *ctx,
 	if ((pkt->out_buf_max < 0) || !IN_RANGE(pkt->in_len, 0, pkt->out_buf_max)) {
 		return -EINVAL;
 	}
+
+#if DT_HAS_COMPAT_STATUS_OKAY(st_stm32l4_aes) && !defined(CONFIG_SOC_SERIES_STM32L4X)
+	/* stm32l0xx and stm32l1xx write to output buffer by 16 byte burst */
+	if (ROUND_UP(pkt->in_len, BLOCK_LEN_BYTES) > pkt->out_buf_max) {
+		LOG_ERR("STM32L0/L1 require an output buffer size multiple of 16 bytes");
+		return -ENOTSUP;
+	}
+#endif
 
 	/* Counter is at most 32 bit and shall not wrap for the current operation */
 	if ((ctx->mode_params.ctr_info.ctr_len % 8) != 0 || ctr_len_byte > sizeof(uint32_t) ||
