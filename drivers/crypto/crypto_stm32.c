@@ -382,9 +382,20 @@ static int crypto_stm32_ctr_encrypt(struct cipher_ctx *ctx,
 {
 	struct crypto_stm32_data *const data = CRYPTO_STM32_DATA(ctx->device);
 	struct crypto_stm32_session *const session = CRYPTO_STM32_SESSN(ctx);
+	size_t ctr_len_byte = ctx->mode_params.ctr_info.ctr_len / 8;
 	int ret;
 	uint32_t ctr[BLOCK_LEN_WORDS] = {0};
-	int ivlen = BLOCK_LEN_BYTES - (ctx->mode_params.ctr_info.ctr_len >> 3);
+	int ivlen = BLOCK_LEN_BYTES - ctr_len_byte;
+
+	if ((pkt->out_buf_max < 0) || !IN_RANGE(pkt->in_len, 0, pkt->out_buf_max)) {
+		return -EINVAL;
+	}
+
+	/* Counter is at most 32 bit and shall not wrap for the current operation */
+	if ((ctx->mode_params.ctr_info.ctr_len % 8) != 0 || ctr_len_byte > sizeof(uint32_t) ||
+	    DIV_ROUND_UP(pkt->in_len, BLOCK_LEN_BYTES) > BIT64(ctr_len_byte)) {
+		return -EINVAL;
+	}
 
 	if (copy_words_adjust_endianness((uint8_t *)ctr, sizeof(ctr), iv, ivlen) != 0) {
 		return -EIO;
@@ -410,9 +421,20 @@ static int crypto_stm32_ctr_decrypt(struct cipher_ctx *ctx,
 {
 	struct crypto_stm32_data *const data = CRYPTO_STM32_DATA(ctx->device);
 	struct crypto_stm32_session *const session = CRYPTO_STM32_SESSN(ctx);
+	size_t ctr_len_byte = ctx->mode_params.ctr_info.ctr_len / 8;
 	int ret;
 	uint32_t ctr[BLOCK_LEN_WORDS] = {0};
-	int ivlen = BLOCK_LEN_BYTES - (ctx->mode_params.ctr_info.ctr_len >> 3);
+	int ivlen = BLOCK_LEN_BYTES - ctr_len_byte;
+
+	if ((pkt->out_buf_max < 0) || !IN_RANGE(pkt->in_len, 0, pkt->out_buf_max)) {
+		return -EINVAL;
+	}
+
+	/* Counter is at most 32 bit and shall not wrap for the current operation */
+	if ((ctx->mode_params.ctr_info.ctr_len % 8) != 0 || ctr_len_byte > sizeof(uint32_t) ||
+	    DIV_ROUND_UP(pkt->in_len, BLOCK_LEN_BYTES) > BIT64(ctr_len_byte)) {
+		return -EINVAL;
+	}
 
 	if (copy_words_adjust_endianness((uint8_t *)ctr, sizeof(ctr), iv, ivlen) != 0) {
 		return -EIO;
