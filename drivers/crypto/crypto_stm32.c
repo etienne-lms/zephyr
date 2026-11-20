@@ -386,11 +386,19 @@ static stm32_status_t hal_decrypt_it(hal_crypt_handle_t *hcryp, uint32_t *in_dat
  * HAL_CRYP_ErrorCallback(), both of which give complete_sem. Returns -EIO on any failure so the
  * caller can fall back to the polling do_aes() path.
  */
-static int do_aes_it(struct cipher_ctx *ctx, hal_cryp_aes_it_op_func_t fn, uint8_t *in_buf,
-		     int in_len, uint8_t *out_buf)
+static int do_aes_it(struct cipher_ctx *ctx, hal_cryp_aes_it_op_func_t fn_isr,
+		     hal_cryp_aes_op_func_t fn_poll,  uint8_t *in_buf, int in_len, uint8_t *out_buf)
 {
 	struct crypto_stm32_data *data = CRYPTO_STM32_DATA(ctx->device);
 	struct crypto_stm32_session *session = CRYPTO_STM32_SESSN(ctx);
+	size_t rounded_size = ROUND_DOWN(in_len, BLOCK_LEN_BYTES);
+	size_t remaining = in_len - rounded_size;
+	uint8_t *out = out_buf;
+	uint8_t *in = in_buf;
+
+	if (in_len != 0 && in_buf == NULL) {
+		return -EINVAL;
+	}
 
 	if (HAL_CRYP_SetConfig(&data->hcryp, &session->config) != HAL_OK) {
 		LOG_ERR("Configuration error");
@@ -405,7 +413,7 @@ static int do_aes_it(struct cipher_ctx *ctx, hal_cryp_aes_it_op_func_t fn, uint8
 
 	k_sem_reset(&data->complete_sem);
 
-	if (fn(&data->hcryp, (uint32_t *)in_buf, in_len, (uint32_t *)out_buf) != HAL_OK) {
+	if (fn_isr(&data->hcryp, (uint32_t *)in, rounded_size, (uint32_t *)out) != HAL_OK) {
 		return -EIO;
 	}
 
@@ -430,7 +438,12 @@ static int do_aes_it(struct cipher_ctx *ctx, hal_cryp_aes_it_op_func_t fn, uint8
 		return -EIO;
 	}
 
-	return 0;
+	if (remaining == 0) {
+		return 0;
+	}
+
+	return do_aes_partial(data, fn_poll, session->mode, in + rounded_size, remaining,
+			      out + rounded_size);
 }
 #endif /* STM32_CRYP_USE_ISR */
 
@@ -458,7 +471,7 @@ static int crypto_stm32_ecb_encrypt(struct cipher_ctx *ctx,
 	k_sem_take(&data->device_sem, K_FOREVER);
 
 #if defined(STM32_CRYP_USE_ISR)
-	ret = do_aes_it(ctx, hal_encrypt_it, pkt->in_buf, pkt->in_len, pkt->out_buf);
+	ret = do_aes_it(ctx, hal_encrypt_it, NULL, pkt->in_buf, pkt->in_len, pkt->out_buf);
 	if (ret != 0) {
 		ret = do_aes(ctx, hal_ecb_encrypt_op, pkt->in_buf, pkt->in_len, pkt->out_buf);
 	}
@@ -499,7 +512,7 @@ static int crypto_stm32_ecb_decrypt(struct cipher_ctx *ctx,
 	k_sem_take(&data->device_sem, K_FOREVER);
 
 #if defined(STM32_CRYP_USE_ISR)
-	ret = do_aes_it(ctx, hal_decrypt_it, pkt->in_buf, pkt->in_len, pkt->out_buf);
+	ret = do_aes_it(ctx, hal_decrypt_it, NULL, pkt->in_buf, pkt->in_len, pkt->out_buf);
 	if (ret != 0) {
 		ret = do_aes(ctx, hal_ecb_decrypt_op, pkt->in_buf, pkt->in_len, pkt->out_buf);
 	}
@@ -546,7 +559,8 @@ static int crypto_stm32_cbc_encrypt(struct cipher_ctx *ctx,
 	k_sem_take(&data->device_sem, K_FOREVER);
 
 #if defined(STM32_CRYP_USE_ISR)
-	ret = do_aes_it(ctx, hal_encrypt_it, pkt->in_buf, pkt->in_len, pkt->out_buf + out_offset);
+	ret = do_aes_it(ctx, hal_encrypt_it, NULL, pkt->in_buf, pkt->in_len,
+			pkt->out_buf + out_offset);
 	if (ret != 0) {
 		ret = do_aes(ctx, hal_cbc_encrypt_op, pkt->in_buf, pkt->in_len,
 			     pkt->out_buf + out_offset);
@@ -589,8 +603,8 @@ static int crypto_stm32_cbc_decrypt(struct cipher_ctx *ctx,
 	k_sem_take(&data->device_sem, K_FOREVER);
 
 #if defined(STM32_CRYP_USE_ISR)
-	ret = do_aes_it(ctx, hal_decrypt_it, pkt->in_buf + in_offset, pkt->in_len - in_offset,
-		       pkt->out_buf);
+	ret = do_aes_it(ctx, hal_decrypt_it, NULL, pkt->in_buf + in_offset,
+			pkt->in_len - in_offset, pkt->out_buf);
 	if (ret != 0) {
 		ret = do_aes(ctx, hal_cbc_decrypt_op, pkt->in_buf + in_offset,
 			     pkt->in_len - in_offset, pkt->out_buf);
@@ -646,7 +660,8 @@ static int crypto_stm32_ctr_encrypt(struct cipher_ctx *ctx,
 	k_sem_take(&data->device_sem, K_FOREVER);
 
 #if defined(STM32_CRYP_USE_ISR)
-	ret = do_aes_it(ctx, hal_encrypt_it, pkt->in_buf, pkt->in_len, pkt->out_buf);
+	ret = do_aes_it(ctx, hal_encrypt_it, hal_ctr_encrypt_op, pkt->in_buf, pkt->in_len,
+			pkt->out_buf);
 	if (ret != 0) {
 		ret = do_aes(ctx, hal_ctr_encrypt_op, pkt->in_buf, pkt->in_len, pkt->out_buf);
 	}
@@ -700,7 +715,8 @@ static int crypto_stm32_ctr_decrypt(struct cipher_ctx *ctx,
 	k_sem_take(&data->device_sem, K_FOREVER);
 
 #if defined(STM32_CRYP_USE_ISR)
-	ret = do_aes_it(ctx, hal_decrypt_it, pkt->in_buf, pkt->in_len, pkt->out_buf);
+	ret = do_aes_it(ctx, hal_decrypt_it, hal_ctr_decrypt_op, pkt->in_buf, pkt->in_len,
+			pkt->out_buf);
 	if (ret != 0) {
 		ret = do_aes(ctx, hal_ctr_decrypt_op, pkt->in_buf, pkt->in_len, pkt->out_buf);
 	}
